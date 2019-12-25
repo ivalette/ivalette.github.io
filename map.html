@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>map.utf8.md</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-binding-2.0.3/leaflet.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Isabelle Valette</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="tm.html">Topic Models</a>
+</li>
+<li>
+  <a href="map.html">Build Maps in R</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="contact.html">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/ivalette">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/valette_isa">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/isabellevalette/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<hr />
+<hr />
+<p><link rel="stylesheet" href="styles.css" type="text/css"></p>
+<p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
+<p><br clear="all" /> <br clear="all" /></p>
+<div id="create-maps-in-r-using-base-lattice-ggplot2-googlevis-leaflet-and-rcharts" class="section level2">
+<h2>Create Maps in R using Base, Lattice, ggplot2, GoogleVis, leaflet and rCharts</h2>
+<p>The following code will help you build your own maps in R using base plotting, Lattice, ggplot2, the GoogleVis Chart API, Rcharts and leaflet. This blog was first published in 2015 and updated in 2019. Enjoy and have fun with it!</p>
+</div>
+<div id="prerequisites" class="section level2">
+<h2>Prerequisites</h2>
+<p>You may want to download the metadata files available on my GitHub repo <a href="https://github.com/ivalette/Rmaps_norway">here</a>:</p>
+<ol style="list-style-type: decimal">
+<li><p>The first shapefile of Norway is from the website of <a href="http://www.kartverket.no">the Norwegian Mapping Authority (Kartverket)</a>. It was downloaded back in 2015. We will use the shapefile called NO_Arealdekke_pol.shp. Don’t forget to refer to them when using the map and please read the <a href="https://www.kartverket.no/en/data/Terms-of-use/">terms of use</a>.</p></li>
+<li><p>The second shapefile is from the website of the Global Administrative Areas at this <a href="http://gadm.org/">location</a>. I downloaded the shapefile for Norway back in 2015. You can also download shapefiles for other countries there.</p></li>
+<li><p>You may also need a file containing the X-Y coordinate of spatial locations you want to plot. In our case, we will use a file containing the Norwegian postal code areas. This file is available <a href="http://www.erikbolstad.no/postnummer-koordinatar/txt/postnummer.csv">here</a>.</p></li>
+</ol>
+</div>
+<div id="building-the-map-of-norway-in-r" class="section level2">
+<h2>Building the Map of Norway in R</h2>
+<pre class="r"><code>library(plyr)
+library(dplyr)         
+library(ggplot2)      
+library(lattice)      
+library(rgdal)        
+library(rgeos)        
+library(spatstat)     
+library(sp)           
+library(maptools)     
+library(maps)         
+library(RColorBrewer) 
+library(grDevices)    
+library(reshape2)     
+library(rCharts)  
+library(leaflet)
+library(knitr)        
+library(base64enc) 
+suppressPackageStartupMessages(library(googleVis)) </code></pre>
+<div id="building-maps-using-rs-base-plotting" class="section level3">
+<h3>Building Maps using R’s Base Plotting</h3>
+<p>There are several ways to build maps in R. First let’s build a simple map of Norway showing a few Norwegian cities with R’s base plotting system.</p>
+<pre class="r"><code>fylke &lt;- readOGR(dsn = &quot;33_N5000_shape&quot;,
+                 layer = &quot;NO_Arealdekke_pol&quot;)</code></pre>
+<pre><code>## OGR data source with driver: ESRI Shapefile 
+## Source: &quot;/Users/isavalet/Documents/R/GitHub/ivalette.github.io/33_N5000_shape&quot;, layer: &quot;NO_Arealdekke_pol&quot;
+## with 1324 features
+## It has 5 fields</code></pre>
+<pre class="r"><code>fylke &lt;- fylke[fylke$OBJTYPE != &quot;Havflate&quot;,]
+norway &lt;- gUnaryUnion(fylke)
+
+cities &lt;- data.frame(city = c(&quot;Oslo&quot;, &quot;Larvik&quot;, &quot;Bergen&quot;, &quot;Haugesund&quot;, 
+                              &quot;Trondheim&quot;, &quot;Nordkapp&quot;, &quot;Tromsø&quot;),
+                     LAT = c(59.9084400, 59.0686800, 60.3713600, 59.4094000,
+                             63.4240100, 70.9821400, 69.6478700),
+                     LON = c(10.7230100, 10.0473000, 5.3537800, 5.2995100,
+                             10.4409600, 25.9707600, 18.9566000), 
+                     stringsAsFactors = F)
+
+proj &lt;- CRS(proj4string(norway)) 
+coordinates(cities) &lt;- ~ LON + LAT
+proj4string(cities) &lt;- CRS(&quot;+init=epsg:4326&quot;)
+cities_proj &lt;- spTransform(cities, proj)
+
+plot(norway, border = &quot;darkgrey&quot;)
+points(cities_proj, col = &quot;red&quot;, pch = 16)
+text(cities_proj, labels = cities$city, cex = 0.6, font = 2, offset = 0.5, adj = c(0,2))
+legend(&quot;bottomright&quot;, legend = c(&quot;©Kartverket&quot;), col = black, cex = 0.5, bty = &quot;n&quot;)</code></pre>
+<p><img src="map_files/figure-html/map1-1.png" width="768" /></p>
+</div>
+<div id="performing-a-voronoi-tessellation-with-base-plotting" class="section level3">
+<h3>Performing a Voronoi Tessellation with Base Plotting</h3>
+<p>Now, let’s build a map showing all postal code areas with a Voronoi Tessellation:</p>
+<ol style="list-style-type: decimal">
+<li><p>We plot the map of Norway as previously shown with the first shapefile of Norway.</p></li>
+<li><p>We plot all the 4463 postal codes coordinates just as we plotted a few cities earlier.</p></li>
+<li><p>We perform a Voronoi Tessellation. See the following wiki link for more details on <a href="http://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi Tessellation</a>.</p></li>
+</ol>
+<p>We use the “spatstat” package in R to do this.</p>
+<pre class="r"><code>postal &lt;- read.delim(&quot;postnummer.csv&quot;, colClasses = &quot;character&quot;)
+postal &lt;- transform(postal, LON = as.numeric(LON), LAT = as.numeric(LAT))
+postal2 &lt;- postal[!grepl(&quot;ikkje i bruk&quot;, postal$POSTSTAD),]
+post &lt;- ddply(postal2, ~ LON + LAT, summarise, POSTNR = paste(POSTNR, collapse = &quot;, &quot;))
+proj &lt;- CRS(proj4string(norway))
+coordinates(post) &lt;- ~ LON + LAT
+proj4string(post) &lt;- CRS(&quot;+init=epsg:4326&quot;)
+post_proj = spTransform(post, proj)
+plot(norway, border = &quot;darkgrey&quot;)
+points(post_proj, col = &quot;red&quot;, pch = &quot;.&quot;)</code></pre>
+<p>We are now ready to perform the Voronoi Tessellation.</p>
+<pre class="r"><code>bboks_norway &lt;- bbox(norway)
+bboks_owin &lt;- owin(bboks_norway[1,], bboks_norway[2,])
+post_ppp &lt;- as.ppp(coordinates(post_proj), W = bboks_owin)
+diagram &lt;- dirichlet(post_ppp)
+diagram_poly &lt;- as(diagram, &quot;SpatialPolygons&quot;)
+proj4string(diagram_poly) &lt;- proj
+plot(diagram_poly)</code></pre>
+<p><img src="map_files/figure-html/map3-1.png" width="768" /></p>
+<p>We remove what would be plotted outside the borders of Norway</p>
+<pre class="r"><code>diagram_poly_norway &lt;- gIntersection(diagram_poly, norway, byid=TRUE)
+plot(diagram_poly_norway)</code></pre>
+<p>We plot Norway with its flag colors. Each postal code areas get its own colors.</p>
+<pre class="r"><code>pal &lt;- colorRampPalette(c(&quot;blue&quot;, &quot;white&quot;, &quot;red&quot;))
+plot(diagram_poly_norway, col = pal(4463), border = &quot;black&quot;)
+legend(&quot;bottomright&quot;, legend = c(&quot;©Kartverket&quot;), col = black, cex = 0.5, bty = &quot;n&quot;)</code></pre>
+<p><img src="map_files/figure-html/map5-1.png" width="768" /></p>
+</div>
+<div id="building-maps-in-r-using-lattice" class="section level3">
+<h3>Building Maps in R using Lattice</h3>
+<p>Now let’s say we want to visualize a variable called churn showing the churn rate for each of the 19 Norwegian regions (fylke). We want the results to be shown in a map.</p>
+<pre class="r"><code>norway2 &lt;- readOGR(dsn = &quot;NOR_adm&quot; ,
+                   layer = &quot;NOR_adm2&quot;)
+norway2_data &lt;- norway2@data
+
+churn &lt;- data.frame(NAME_1 = c( &quot;Akershus&quot; , &quot;Ãstfold&quot;, &quot;Aust-Agder&quot;, &quot;Buskerud&quot;,
+                                &quot;Finnmark&quot;,  &quot;Hedmark&quot; ,  &quot;Hordaland&quot;, &quot;Møre og Romsdal&quot; ,
+                                &quot;Nord-Trøndelag&quot; ,   &quot;Nordland&quot; ,  &quot;Oppland&quot;, &quot;Oslo&quot;,
+                                &quot;Rogaland&quot;,  &quot;Sogn og Fjordane&quot;,  &quot;Sør-Trøndelag&quot;,
+                                &quot;Telemark&quot;, &quot;Troms&quot;, &quot;Vest-Agder&quot; , &quot;Vestfold&quot; ), 
+                    Churn = c(1.0, 1.1, 1.5, 1.55, 2.9, 3.12, 3.1, 4.2, 4.3, 4.8,
+                              5.1, 5.3, 5.5, 5.56, 7.9, 8.3, 11, 5.6, 6.1),
+                    stringsAsFactors = F)</code></pre>
+<p>Now let’s do some plotting with Lattice</p>
+<pre class="r"><code>norway2_new &lt;- unionSpatialPolygons(norway2, norway2_data$ID_1)
+norway3 &lt;- SpatialPolygonsDataFrame(norway2_new, churn) 
+pal2 &lt;- colorRampPalette(c(&quot;white&quot;, &quot;red&quot;))
+trellis.par.set(axis.line=list(col=NA))
+spplot(norway3, &quot;Churn&quot;, 
+       main=&quot;Churn Rate per Norwegian Region (Fylke)&quot;, 
+       lwd=.4, 
+       col=&quot;white&quot;, 
+       col.regions=pal2(19), 
+       colorkey = FALSE, 
+       bty=&quot;n&quot;)</code></pre>
+<p><img src="map_files/figure-html/map6-1.png" width="768" /></p>
+</div>
+<div id="building-maps-in-r-with-ggplot2" class="section level3">
+<h3>Building Maps in R with ggplot2</h3>
+<p>Now, let’s try to visualize the churn rate dataset using the ggplot2 package. We will reuse the churn dataframe from the last example.</p>
+<pre class="r"><code>norway2@data$id &lt;- rownames(norway2@data)
+norway2_points &lt;- fortify(norway2, region=&quot;id&quot;)
+norway2_df &lt;- join(norway2_points, norway2@data, by=&quot;id&quot;)
+merged &lt;- merge(norway2_df, churn, by = &quot;NAME_1&quot;)
+merged &lt;- merged[order(merged$order), ]
+pal3 &lt;- colorRampPalette(c(&quot;white&quot;, &quot;blue&quot;))
+breaks &lt;- c(quantile(merged$Churn))
+
+q &lt;- ggplot(data = merged, aes(x = long, y = lat, group = group))
+q &lt;- q + geom_polygon(color = &quot;lightgrey&quot;, aes(fill = factor(Churn)))
+q &lt;- q + ggtitle(&quot;Churn Rate per Norwegian Region (Fylke)&quot;)
+q &lt;- q + scale_fill_manual( values = pal3(19), breaks= breaks ) 
+q &lt;- q + labs(fill=&quot;Churn Rate&quot;)
+q &lt;- q + theme(panel.background = element_rect(fill = &quot;white&quot;, colour = &quot;grey&quot;),
+       panel.grid.major = element_line(colour = &quot;grey&quot;)) 
+q</code></pre>
+<p><img src="map_files/figure-html/map7-1.png" width="672" /></p>
+</div>
+<div id="building-interactive-maps-in-r-using-googlevis" class="section level3">
+<h3>Building Interactive Maps in R using GoogleVis</h3>
+<p>Now let’s say we want to visualize a variable called profit and compare results across Nordic countries. We want the results to be shown in an interactive map. We use the R package called ‘Googlevis’ to do this. The basic idea behind the GoogleVis package is:</p>
+<ol style="list-style-type: decimal">
+<li><p>The R function creates an HTML page</p></li>
+<li><p>The HTML page calls the Google Charts API</p></li>
+<li><p>The results are displayed with an interactive HTML graphic</p></li>
+</ol>
+<p>Please note that, you can choose to change the map settings to a European map using region=“150” in the GvisGeoChart command line. The default setting shows a world map. See <a href="http://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html">GoogleVis Examples</a> on how to get started with the GoogleVis package.</p>
+<pre class="r"><code>op &lt;- options(gvis.plot.tag = &#39;chart&#39;)
+revenue &lt;- data.frame(Country = c(&quot;Norway&quot;, &quot;Sweden&quot;, &quot;Denmark&quot;, &quot;Finland&quot;, &quot;Iceland&quot;),
+                      Profit = c(10, 3, 5, 7, 5), 
+                      stringsAsFactors = F)
+nordic &lt;- gvisGeoChart(revenue, 
+                       locationvar = &quot;Country&quot;,
+                       colorvar = &quot;Profit&quot;,
+                       options = list(width = 600, height = 400,region = &quot;154&quot;))
+plot(nordic)</code></pre>
+<!-- GeoChart generated in R 3.5.2 by googleVis 0.6.4 package -->
+<!-- Wed Dec 25 18:05:46 2019 -->
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataGeoChartIDdf1a458d3a4b () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"Norway",
+10
+],
+[
+"Sweden",
+3
+],
+[
+"Denmark",
+5
+],
+[
+"Finland",
+7
+],
+[
+"Iceland",
+5
+] 
+];
+data.addColumn('string','Country');
+data.addColumn('number','Profit');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartGeoChartIDdf1a458d3a4b() {
+var data = gvisDataGeoChartIDdf1a458d3a4b();
+var options = {};
+options["width"] = 600;
+options["height"] = 400;
+options["region"] = "154";
+
+    var chart = new google.visualization.GeoChart(
+    document.getElementById('GeoChartIDdf1a458d3a4b')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "geochart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartGeoChartIDdf1a458d3a4b);
+})();
+function displayChartGeoChartIDdf1a458d3a4b() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+<!-- jsChart -->
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartIDdf1a458d3a4b"></script>
+<!-- divChart -->
+<div id="GeoChartIDdf1a458d3a4b" style="width: 600; height: 400;">
+
+</div>
+</div>
+<div id="building-interactive-maps-in-r-using-rcharts-and-leaflet" class="section level3">
+<h3>Building Interactive Maps in R using rCharts and leaflet</h3>
+<p>Finally, we want to visualize interactively a street view of Oslo, the capital of Norway, with the leaflet and rCharts package in R and plot some popups. rCharts is an incredibly easy way to create interactive javascript visualizations using R.</p>
+<p>See <a href="https://rstudio.github.io/leaflet/">leaflet</a> for further details on how to get started with leaflet. See <a href="https://rpubs.com/dnchari/rcharts">rCharts</a> for further details on how to get started with rCharts.</p>
+<pre class="r"><code>map3 &lt;-  leaflet() %&gt;%
+  addTiles() %&gt;% 
+  addMarkers(lng = 10.7246670, lat = 59.9140100, popup = &quot;Hi. I am a popup&quot;) %&gt;% 
+        addMarkers(lng = 10.7645700,  lat = 59.9085200, popup = &quot;Hello Oslo!&quot;)
+map3</code></pre>
+<div id="htmlwidget-d1f7f3f9540afb72be1a" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d1f7f3f9540afb72be1a">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[59.91401,10.724667,null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Hi. I am a popup",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addMarkers","args":[59.90852,10.76457,null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Hello Oslo!",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[59.90852,59.91401],"lng":[10.724667,10.76457]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="acknowledgements-and-references" class="section level2">
+<h2>Acknowledgements and References</h2>
+<p>Thanks to Brian Caffo, Jeff Leek and Roger Peng from the John Hopkins Bloomberg School of Public Health, Department of Biostatistics. Your Data Science Specialization on Coursera inspired me.</p>
+<p>Thanks a lot to the Norwegian Mapping Authority (Kartverket) for sharing shapefiles with data scientists.</p>
+<p>A big big thanks to Karl Ove Hufthammer! His wonderful blog was a great source of inspiration and a main reference when writing this blog. The code for the Voronoi Tessellation is all his, I just copied it.</p>
+<p>A big thanks to Erik Bolstad for making the csv files with postal code coordinates available in Norway.</p>
+<p>Thanks to the Global Administrative Areas for giving access to shapefiles of the world.</p>
+</div>
+<div id="inspirational-blogs-for-building-maps-and-working-with-spatial-objects" class="section level2">
+<h2>Inspirational Blogs For Building Maps and Working with Spatial Objects</h2>
+<p><a href="http://zevross.com/blog/2014/07/16/mapping-in-r-using-the-ggplot2-package/" class="uri">http://zevross.com/blog/2014/07/16/mapping-in-r-using-the-ggplot2-package/</a></p>
+<p><a href="http://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html" class="uri">http://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html</a></p>
+<p><a href="http://rcharts.io/#" class="uri">http://rcharts.io/#</a></p>
+<p><a href="https://github.com/hadley/ggplot2/wiki/plotting-polygon-shapefiles" class="uri">https://github.com/hadley/ggplot2/wiki/plotting-polygon-shapefiles</a></p>
+</div>
+<div id="r-session-info" class="section level2">
+<h2>R Session Info</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.5.2 (2018-12-20)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Mojave 10.14.6
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] googleVis_0.6.4     base64enc_0.1-3     knitr_1.25         
+##  [4] leaflet_2.0.3       rCharts_0.4.5       reshape2_1.4.3     
+##  [7] RColorBrewer_1.1-2  maps_3.3.0          maptools_0.9-9     
+## [10] spatstat_1.61-0     rpart_4.1-13        nlme_3.1-137       
+## [13] spatstat.data_1.4-0 rgeos_0.5-3         rgdal_1.4-8        
+## [16] sp_1.3-2            lattice_0.20-38     ggplot2_3.2.1      
+## [19] dplyr_0.8.3         plyr_1.8.4         
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.2            deldir_0.1-23         assertthat_0.2.1     
+##  [4] digest_0.6.22         mime_0.7              R6_2.4.0             
+##  [7] evaluate_0.14         tensor_1.5            pillar_1.4.2         
+## [10] rlang_0.4.1           lazyeval_0.2.2        whisker_0.4          
+## [13] Matrix_1.2-15         goftest_1.2-2         rmarkdown_1.16       
+## [16] labeling_0.3          stringr_1.4.0         foreign_0.8-71       
+## [19] htmlwidgets_1.5.1     polyclip_1.10-0       munsell_0.5.0        
+## [22] shiny_1.4.0           compiler_3.5.2        httpuv_1.5.2         
+## [25] xfun_0.10             pkgconfig_2.0.3       mgcv_1.8-26          
+## [28] htmltools_0.4.0       tidyselect_0.2.5      tibble_2.1.3         
+## [31] codetools_0.2-15      crayon_1.3.4          withr_2.1.2          
+## [34] later_1.0.0           grid_3.5.2            jsonlite_1.6         
+## [37] xtable_1.8-4          gtable_0.3.0          magrittr_1.5         
+## [40] scales_1.0.0          stringi_1.4.3         promises_1.1.0       
+## [43] spatstat.utils_1.15-0 tools_3.5.2           RJSONIO_1.3-1.1      
+## [46] glue_1.3.1            purrr_0.3.3           crosstalk_1.0.0      
+## [49] abind_1.4-5           fastmap_1.0.1         yaml_2.2.0           
+## [52] colorspace_1.4-1</code></pre>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
