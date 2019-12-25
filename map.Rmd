@@ -1,0 +1,251 @@
+---
+
+---
+<link rel="stylesheet" href="styles.css" type="text/css">
+
+<img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left">
+
+<br clear="all" />
+<br clear="all" />
+
+## Create Maps in R using Base, Lattice, ggplot2, GoogleVis, leaflet and rCharts
+The following code will help you build your own maps in R using base plotting, Lattice,  ggplot2, the GoogleVis Chart API, Rcharts and leaflet. This blog was first published in 2015 and updated in 2019. Enjoy and have fun with it!
+
+## Prerequisites
+You may want to download the metadata files available on my GitHub repo [here](https://github.com/ivalette/Rmaps_norway):
+
+1. The first shapefile of Norway is from the website of [the Norwegian Mapping Authority (Kartverket)](http://www.kartverket.no). It was downloaded back in 2015. We will use the shapefile called NO_Arealdekke_pol.shp. Don't forget to refer to them when using the map and please read the [terms of use](https://www.kartverket.no/en/data/Terms-of-use/). 
+
+2. The second shapefile is from the website of the Global Administrative Areas at this [location](http://gadm.org/). I downloaded the shapefile for Norway back in 2015. You can also download shapefiles for other countries there. 
+
+3. You may also need a file containing the X-Y coordinate of spatial locations you want to plot. In our case, we will use a file containing the Norwegian postal code areas. This file is available [here](http://www.erikbolstad.no/postnummer-koordinatar/txt/postnummer.csv). 
+
+
+## Building the Map of Norway in R
+
+```{r message=FALSE, warning=FALSE}
+library(plyr)
+library(dplyr)         
+library(ggplot2)      
+library(lattice)      
+library(rgdal)        
+library(rgeos)        
+library(spatstat)     
+library(sp)           
+library(maptools)     
+library(maps)         
+library(RColorBrewer) 
+library(grDevices)    
+library(reshape2)     
+library(rCharts)  
+library(leaflet)
+library(knitr)        
+library(base64enc) 
+suppressPackageStartupMessages(library(googleVis)) 
+```
+
+### Building Maps using R's Base Plotting
+There are several ways to build maps in R. First let's build a simple map of Norway showing a few Norwegian cities with R's base plotting system. 
+
+````{r map1, fig.width=8, fig.height=8, message=FALSE, warning=FALSE}
+fylke <- readOGR(dsn = "33_N5000_shape",
+                 layer = "NO_Arealdekke_pol")
+fylke <- fylke[fylke$OBJTYPE != "Havflate",]
+norway <- gUnaryUnion(fylke)
+
+cities <- data.frame(city = c("Oslo", "Larvik", "Bergen", "Haugesund", 
+                              "Trondheim", "Nordkapp", "Tromsø"),
+                     LAT = c(59.9084400, 59.0686800, 60.3713600, 59.4094000,
+                             63.4240100, 70.9821400, 69.6478700),
+                     LON = c(10.7230100, 10.0473000, 5.3537800, 5.2995100,
+                             10.4409600, 25.9707600, 18.9566000), 
+                     stringsAsFactors = F)
+
+proj <- CRS(proj4string(norway)) 
+coordinates(cities) <- ~ LON + LAT
+proj4string(cities) <- CRS("+init=epsg:4326")
+cities_proj <- spTransform(cities, proj)
+
+plot(norway, border = "darkgrey")
+points(cities_proj, col = "red", pch = 16)
+text(cities_proj, labels = cities$city, cex = 0.6, font = 2, offset = 0.5, adj = c(0,2))
+legend("bottomright", legend = c("©Kartverket"), col = black, cex = 0.5, bty = "n")
+```
+
+### Performing a Voronoi Tessellation with Base Plotting
+Now, let's build a map showing all postal code areas with a Voronoi Tessellation:
+
+1. We plot the map of Norway as previously shown with the first shapefile of Norway.
+
+2. We plot all the 4463 postal codes coordinates just as we plotted a few cities earlier.
+
+3. We perform a Voronoi Tessellation. See the following wiki link for more details on [Voronoi Tessellation](http://en.wikipedia.org/wiki/Voronoi_diagram). 
+
+We use the "spatstat" package in R to do this.
+
+````{r, results='hide', fig.keep='none'}
+postal <- read.delim("postnummer.csv", colClasses = "character")
+postal <- transform(postal, LON = as.numeric(LON), LAT = as.numeric(LAT))
+postal2 <- postal[!grepl("ikkje i bruk", postal$POSTSTAD),]
+post <- ddply(postal2, ~ LON + LAT, summarise, POSTNR = paste(POSTNR, collapse = ", "))
+proj <- CRS(proj4string(norway))
+coordinates(post) <- ~ LON + LAT
+proj4string(post) <- CRS("+init=epsg:4326")
+post_proj = spTransform(post, proj)
+plot(norway, border = "darkgrey")
+points(post_proj, col = "red", pch = ".")
+```
+
+We are now ready to perform the Voronoi Tessellation.
+
+```{r,map3, fig.width=8, fig.height=8, message=FALSE, warning=FALSE}
+bboks_norway <- bbox(norway)
+bboks_owin <- owin(bboks_norway[1,], bboks_norway[2,])
+post_ppp <- as.ppp(coordinates(post_proj), W = bboks_owin)
+diagram <- dirichlet(post_ppp)
+diagram_poly <- as(diagram, "SpatialPolygons")
+proj4string(diagram_poly) <- proj
+plot(diagram_poly)
+```
+
+We remove what would be plotted outside the borders of Norway
+```{r, results='hide', fig.keep='none', message=FALSE, warning=FALSE}
+diagram_poly_norway <- gIntersection(diagram_poly, norway, byid=TRUE)
+plot(diagram_poly_norway)
+```
+
+We plot Norway with its flag colors. Each postal code areas get its own colors.
+````{r, map5,  fig.width=8, fig.height=8, message=FALSE, warning=FALSE}
+pal <- colorRampPalette(c("blue", "white", "red"))
+plot(diagram_poly_norway, col = pal(4463), border = "black")
+legend("bottomright", legend = c("©Kartverket"), col = black, cex = 0.5, bty = "n")
+```
+
+
+### Building Maps in R using Lattice
+Now let's say we want to visualize a variable called churn showing the churn rate for each of the 19 Norwegian regions (fylke). We want the results to be shown in a map. 
+
+`````{r, results='hide'}
+norway2 <- readOGR(dsn = "NOR_adm" ,
+                   layer = "NOR_adm2")
+norway2_data <- norway2@data
+
+churn <- data.frame(NAME_1 = c( "Akershus" , "Ãstfold", "Aust-Agder", "Buskerud",
+                                "Finnmark",  "Hedmark" ,  "Hordaland", "Møre og Romsdal" ,
+                                "Nord-Trøndelag" ,   "Nordland" ,  "Oppland", "Oslo",
+                                "Rogaland",  "Sogn og Fjordane",  "Sør-Trøndelag",
+                                "Telemark", "Troms", "Vest-Agder" , "Vestfold" ), 
+                    Churn = c(1.0, 1.1, 1.5, 1.55, 2.9, 3.12, 3.1, 4.2, 4.3, 4.8,
+                              5.1, 5.3, 5.5, 5.56, 7.9, 8.3, 11, 5.6, 6.1),
+                    stringsAsFactors = F)
+```
+
+Now let's do some plotting with Lattice
+````{r, map6, fig.width=8, fig.height=5, message=FALSE, warning=FALSE}
+norway2_new <- unionSpatialPolygons(norway2, norway2_data$ID_1)
+norway3 <- SpatialPolygonsDataFrame(norway2_new, churn) 
+pal2 <- colorRampPalette(c("white", "red"))
+trellis.par.set(axis.line=list(col=NA))
+spplot(norway3, "Churn", 
+       main="Churn Rate per Norwegian Region (Fylke)", 
+       lwd=.4, 
+       col="white", 
+       col.regions=pal2(19), 
+       colorkey = FALSE, 
+       bty="n")
+```
+
+### Building Maps in R with ggplot2
+
+Now, let's try to visualize the churn rate dataset using the ggplot2 package. We will reuse the churn dataframe from the last example.
+
+````{r, map7, fig.width=7, fig.height=6, message=FALSE, warning=FALSE} 
+norway2@data$id <- rownames(norway2@data)
+norway2_points <- fortify(norway2, region="id")
+norway2_df <- join(norway2_points, norway2@data, by="id")
+merged <- merge(norway2_df, churn, by = "NAME_1")
+merged <- merged[order(merged$order), ]
+pal3 <- colorRampPalette(c("white", "blue"))
+breaks <- c(quantile(merged$Churn))
+
+q <- ggplot(data = merged, aes(x = long, y = lat, group = group))
+q <- q + geom_polygon(color = "lightgrey", aes(fill = factor(Churn)))
+q <- q + ggtitle("Churn Rate per Norwegian Region (Fylke)")
+q <- q + scale_fill_manual( values = pal3(19), breaks= breaks ) 
+q <- q + labs(fill="Churn Rate")
+q <- q + theme(panel.background = element_rect(fill = "white", colour = "grey"),
+       panel.grid.major = element_line(colour = "grey")) 
+q
+```
+
+
+### Building Interactive Maps in R using GoogleVis
+Now let's say we want to visualize a variable called profit and compare results across Nordic countries. We want the results to be shown in an interactive map. We use the R package called 'Googlevis' to do this. The basic idea behind the GoogleVis package is:
+
+1. The R function creates an HTML page
+
+2. The HTML page calls the Google Charts API
+
+3. The results are displayed with an interactive HTML graphic
+
+Please note that, you can choose to change the map settings to a European map using region="150" in the GvisGeoChart command line. The default setting shows a world map. See [GoogleVis Examples](http://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html) on how to get started with the GoogleVis package. 
+
+````{r map8, results = 'asis'}
+op <- options(gvis.plot.tag = 'chart')
+revenue <- data.frame(Country = c("Norway", "Sweden", "Denmark", "Finland", "Iceland"),
+                      Profit = c(10, 3, 5, 7, 5), 
+                      stringsAsFactors = F)
+nordic <- gvisGeoChart(revenue, 
+                       locationvar = "Country",
+                       colorvar = "Profit",
+                       options = list(width = 600, height = 400,region = "154"))
+plot(nordic)
+```
+
+### Building Interactive Maps in R using rCharts and leaflet
+Finally, we want to visualize interactively a street view of Oslo, the capital of Norway, with the leaflet and rCharts package in R and plot some popups. rCharts is an incredibly easy way to create interactive javascript visualizations using R. 
+
+See [leaflet](https://rstudio.github.io/leaflet/) for further details on how to get started with leaflet.
+See [rCharts](https://rpubs.com/dnchari/rcharts) for further details on how to get started with rCharts.   
+
+```{r, map9, results = 'asis', comment = NA}
+map3 <-  leaflet() %>%
+  addTiles() %>% 
+  addMarkers(lng = 10.7246670, lat = 59.9140100, popup = "Hi. I am a popup") %>% 
+        addMarkers(lng = 10.7645700,  lat = 59.9085200, popup = "Hello Oslo!")
+map3
+```
+
+
+## Acknowledgements and References
+
+Thanks to Brian Caffo, Jeff Leek and Roger Peng from the John Hopkins Bloomberg School of Public Health, Department of Biostatistics. Your Data Science Specialization on Coursera inspired me.
+
+Thanks a lot to the Norwegian Mapping Authority (Kartverket) for sharing shapefiles with data scientists. 
+
+A big big thanks to Karl Ove Hufthammer! His wonderful blog was a great source of inspiration and a main reference when writing this blog. The code for the Voronoi Tessellation is all his, I just copied it. 
+
+A big thanks to Erik Bolstad for making the csv files with postal code coordinates available in Norway.
+
+Thanks to the Global Administrative Areas for giving access to shapefiles of the world.
+
+
+## Inspirational Blogs For Building Maps and Working with Spatial Objects
+
+http://zevross.com/blog/2014/07/16/mapping-in-r-using-the-ggplot2-package/
+
+http://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html
+
+http://rcharts.io/#
+
+https://github.com/hadley/ggplot2/wiki/plotting-polygon-shapefiles
+
+
+## R Session Info
+```{r}
+sessionInfo()
+```
+
+
+
+

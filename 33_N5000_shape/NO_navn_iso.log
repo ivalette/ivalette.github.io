@@ -1,0 +1,56 @@
+LOGGFIL FOR SOSI->SHAPE KONV
+C:\Programfiler\Geodata\SosiShape22\bin\sosi2av2  versjon 2.2.3 1999-12-27
+GD-lib.  versjon 2.2.3 1999-12-27
+GD-koord versjon 1.0b1 1997-10-05
+
+Prosjektfil...................: navn.prj
+Inifil for prosjekt...........: C:\Programfiler\Geodata\SosiShape22\bin\sosi2av.ini
+Loggfil.......................: NAVN_e00\Navn_iso.log
+
+Nivå..........................: 1
+
+OPPSETT
+
+
+
+SOSI-filer :
+	SOSI\Navn_iso.sos
+
+
+Resultatfiler (dobbel presisjon):
+	navn_e00\navn_iso.e00 (TEKST)
+
+
+KONVERTERING
+Start konvertering :
+Tue May 22 08:26:16 2012
+
+Leser SOSI\Navn_iso.sos
+
+HODE:
+..ENHET 0.001000
+..TEGNSETT ISO8859-10
+..ORIGO-NØ	0	0
+..OMRÅDE
+...MIN-NØ	6118714	-343850
+...MAX-NØ	8270076	1366238
+..KOORDSYS 23
+
+
+RESULTAT TEKST:
+Ant. supportert i SOSI-filene.: 161
+Ant. skrevet..................: 161
+Ant. egenskaper definert......: 11
+	OBJTYPE T32 1
+	NAVNTYPE H4 1
+	SKRIFTKODE H3 1
+	SNAVN T50 1
+	SSR-ID H8 1
+	STRENG T50 1
+	TRNORD H1 1
+	TROST H1 1
+	SPERRING T1 1
+	FRISPERR H3 1
+	KOMM T4 1
+TTEMA og antall konvertert
+	0	161		

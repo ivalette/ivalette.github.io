@@ -1,2 +1,2 @@
 # ivalette.github.io
-Peer Assignment practical Machine Learning
+Code for my personal website

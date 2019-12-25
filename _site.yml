@@ -1,0 +1,17 @@
+name: "Isabelle Valette"
+navbar:
+  title: "Isabelle Valette"
+  left:
+    - text: "Topic Models"
+      href: tm.html
+    - text: "Build Maps in R"
+      href: map.html
+  right:
+    - icon: fa-envelope fa-lg
+      href: contact.html
+    - icon: fa-github fa-lg
+      href: http://github.com/ivalette
+    - icon: fa-twitter fa-lg
+      href: https://twitter.com/valette_isa
+    - icon: fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/isabellevalette/
