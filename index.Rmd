@@ -16,9 +16,7 @@ Outside the newsroom, my lastest NLP projects include the development and deploy
 
 Inside the newsroom, I was honored to contribute to a Norwegian Pulitzer diploma project in 2018 for [Tolga](https://www.vg.no/spesial/2018/pu-tilskuddene/) and to work on the Norwegian Pulitzer winning project of 2016 for [The unlawful use of physical restraints in Norwegian psychiatric wards](https://www.vg.no/spesial/2016/tvangsprotokollene/).
 
-I am a R enthusiast and a member of [R Ladies](https://rladies.org). I co-founded the [R Ladies Oslo](https://www.meetup.com/rladies-oslo/events/) chapter in 2018 with fellow R Ladies while meeting at RStudio::Conf 2018 in San Diego.
-
-I have a master degree in Economics from [The Norwegian Business School BI](https://www.bi.no), where I am a guess lecturer. 
+I am a R enthusiast and co-founder of the [RLadies Oslo](https://www.meetup.com/rladies-oslo/events/) chapter. I have a master degree in Economics from [The Norwegian Business School BI](https://www.bi.no), where I am a guess lecturer. 
 
 
 
