@@ -15,3 +15,7 @@ navbar:
       href: https://twitter.com/valette_isa
     - icon: fa-linkedin fa-lg
       href: https://www.linkedin.com/in/isabellevalette/
+output:
+  html_document:
+    theme: paper
+    css: 'styles.css'
