@@ -7,9 +7,9 @@
 <br clear="all" />
 <br clear="all" />
 
-This is a six parts serie on "Learning, training and scaling topic models: a practical approach in R". The serie covers:
+I am currently working on a six parts serie on "Learning, training and scaling topic models: a practical approach in R". The serie covers:
 
-  1. What are [topic models](what_is_topic_modeling.html) (TM)?
+  1. What are topic models (TM)?
   
   2. A little introduction to LDA
   

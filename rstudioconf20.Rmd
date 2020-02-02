@@ -8,11 +8,15 @@
 <br clear="all" />
 <br clear="all" />
 
+rstudio::conf 2020 - San Francisco
+
+<br clear="all" />
+
 <img src="images/sf.jpg" style="width:100%; border:10px solid; margin-right: 20px" align="left">
 
 <br clear="all" />
 
-# rstudio::conf 2020 - San Francisco
+# Why it is worth it to travel 5 000 miles to come to rstudio::conf?
 
 One word to summarize rstudio::conf 2020: **Sharing**.
 
@@ -31,7 +35,7 @@ This is what you can expect coming to a [RStudio](https://rstudio.com) Conferenc
 
 ## Resources from the workshop
 
-I was lucky to join the rstudio::conf twice: Once in San Diego and now in San Francisco. I see that what I use the most once the conference is over is the notes and tips from the workshop. The workshops are very hands-on, with practical exercises and best practices. I have found that they directly impact productivity, support problem-solving skills and increase your coding proficiency.  So, if you can join them, do!  What is great about the workshops is that, all the notes and slides from all the workshops are **shared** with the participants. If like me, there were several workshops you would have liked to attend, but could not, you can get the [materials](https://github.com/rstudio-conf-2020) from these workshops!
+I was lucky to join the rstudio::conf twice: Once in San Diego and now in San Francisco. I see that what I use the most, once the conference is over, is the notes and tips from the workshop. The workshops are very hands-on, with practical exercises and best practices. I have found that they directly impact productivity, support problem-solving skills and increase your coding proficiency.  So, if you can join them, do!  What is also great about the workshops is that, all the notes and slides from all the workshops are **shared** with all participants. If like me, there were several workshops you would have liked to attend, you can get all the [materials](https://github.com/rstudio-conf-2020) from these workshops!
 
 <img src="images/max.jpg" style="width:100%; border:10px solid; margin-right: 20px" align="left">
 
