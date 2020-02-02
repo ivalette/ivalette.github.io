@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
-<title>tm.utf8.md</title>
+<title>tm.utf8</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -235,6 +234,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -278,6 +278,9 @@ $(document).ready(function () {
   <a href="tm.html">Topic Models</a>
 </li>
 <li>
+  <a href="rstudioconf20.html">rstudio::conf</a>
+</li>
+<li>
   <a href="map.html">Build Maps in R</a>
 </li>
       </ul>
@@ -313,10 +316,19 @@ $(document).ready(function () {
 </div>
 
 
-<p><br clear="all" /> <br clear="all" /></p>
+<p><br clear="all" /></p>
 <p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
 <p><br clear="all" /> <br clear="all" /></p>
-<p>The christmas vacations are here and I am currently working on a serie of blogs on “Learning, training and scaling Topic Models”.</p>
+<p>This is a six parts serie on “Learning, training and scaling topic models: a practical approach in R”. The serie covers:</p>
+<ol style="list-style-type: decimal">
+<li><p>What are <a href="what_is_topic_modeling.html">topic models</a> (TM)?</p></li>
+<li><p>A little introduction to LDA</p></li>
+<li><p>A gentle look into the Bayesian statistics behind TM</p></li>
+<li><p>How to train TM and visualise outputs in R?</p></li>
+<li><p>Setting up AWS with R for scaling TM</p></li>
+<li><p>How does the TM algorithm work under the hood?</p></li>
+</ol>
+<p>We will use 3 of Jane Austen’s books to illustrate our examples: Sense and Sensibility, Pride and Prejudice and Persuasion. We will download and process the Austen corpus with the help of the gutenbergr package.</p>
 
 
 

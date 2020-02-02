@@ -4,6 +4,8 @@ navbar:
   left:
     - text: "Topic Models"
       href: tm.html
+    - text: "rstudio::conf"
+      href: rstudioconf20.html  
     - text: "Build Maps in R"
       href: map.html
   right:

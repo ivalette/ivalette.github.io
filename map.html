@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
-<title>map.utf8.md</title>
+<title>map.utf8</title>
 
 <script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -243,6 +242,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -286,6 +286,9 @@ $(document).ready(function () {
   <a href="tm.html">Topic Models</a>
 </li>
 <li>
+  <a href="rstudioconf20.html">rstudio::conf</a>
+</li>
+<li>
   <a href="map.html">Build Maps in R</a>
 </li>
       </ul>
@@ -321,7 +324,7 @@ $(document).ready(function () {
 </div>
 
 
-<p><br clear="all" /> <br clear="all" /></p>
+<p><br clear="all" /></p>
 <p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
 <p><br clear="all" /> <br clear="all" /></p>
 <div id="create-maps-in-r-using-base-lattice-ggplot2-googlevis-leaflet-and-rcharts" class="section level2">
@@ -493,13 +496,13 @@ nordic &lt;- gvisGeoChart(revenue,
                        colorvar = &quot;Profit&quot;,
                        options = list(width = 600, height = 400,region = &quot;154&quot;))
 plot(nordic)</code></pre>
-<!-- GeoChart generated in R 3.5.2 by googleVis 0.6.4 package -->
-<!-- Sat Dec 28 16:00:35 2019 -->
+<!-- GeoChart generated in R 3.6.2 by googleVis 0.6.4 package -->
+<!-- Sun Feb  2 05:03:48 2020 -->
 <!-- jsHeader -->
 <script type="text/javascript">
  
 // jsData 
-function gvisDataGeoChartID174462d4fe4f () {
+function gvisDataGeoChartID77534d78a3ff () {
 var data = new google.visualization.DataTable();
 var datajson =
 [
@@ -531,15 +534,15 @@ return(data);
 }
  
 // jsDrawChart
-function drawChartGeoChartID174462d4fe4f() {
-var data = gvisDataGeoChartID174462d4fe4f();
+function drawChartGeoChartID77534d78a3ff() {
+var data = gvisDataGeoChartID77534d78a3ff();
 var options = {};
 options["width"] = 600;
 options["height"] = 400;
 options["region"] = "154";
 
     var chart = new google.visualization.GeoChart(
-    document.getElementById('GeoChartID174462d4fe4f')
+    document.getElementById('GeoChartID77534d78a3ff')
     );
     chart.draw(data,options);
     
@@ -563,9 +566,9 @@ if (newPackage)
   pkgs.push(chartid);
   
 // Add the drawChart function to the global list of callbacks
-callbacks.push(drawChartGeoChartID174462d4fe4f);
+callbacks.push(drawChartGeoChartID77534d78a3ff);
 })();
-function displayChartGeoChartID174462d4fe4f() {
+function displayChartGeoChartID77534d78a3ff() {
   var pkgs = window.__gvisPackages = window.__gvisPackages || [];
   var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
   window.clearTimeout(window.__gvisLoad);
@@ -588,9 +591,9 @@ callbacks.shift()();
 // jsFooter
 </script>
 <!-- jsChart -->
-<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID174462d4fe4f"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartGeoChartID77534d78a3ff"></script>
 <!-- divChart -->
-<div id="GeoChartID174462d4fe4f" style="width: 600; height: 400;">
+<div id="GeoChartID77534d78a3ff" style="width: 600; height: 400;">
 
 </div>
 </div>
@@ -603,8 +606,8 @@ callbacks.shift()();
   addMarkers(lng = 10.7246670, lat = 59.9140100, popup = &quot;Hi. I am a popup&quot;) %&gt;% 
         addMarkers(lng = 10.7645700,  lat = 59.9085200, popup = &quot;Hello Oslo!&quot;)
 map3</code></pre>
-<div id="htmlwidget-856fa8c8fcc398a355b0" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-856fa8c8fcc398a355b0">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[59.91401,10.724667,null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Hi. I am a popup",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addMarkers","args":[59.90852,10.76457,null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Hello Oslo!",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[59.90852,59.91401],"lng":[10.724667,10.76457]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-2674b10e4824dd22e9da" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2674b10e4824dd22e9da">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[59.91401,10.724667,null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Hi. I am a popup",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addMarkers","args":[59.90852,10.76457,null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},"Hello Oslo!",null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[59.90852,59.91401],"lng":[10.724667,10.76457]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="acknowledgements-and-references" class="section level2">
@@ -625,13 +628,13 @@ map3</code></pre>
 <div id="r-session-info" class="section level2">
 <h2>R Session Info</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.5.2 (2018-12-20)
+<pre><code>## R version 3.6.2 (2019-12-12)
 ## Platform: x86_64-apple-darwin15.6.0 (64-bit)
 ## Running under: macOS Mojave 10.14.6
 ## 
 ## Matrix products: default
-## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -640,33 +643,34 @@ map3</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] googleVis_0.6.4     base64enc_0.1-3     knitr_1.25         
+##  [1] googleVis_0.6.4     base64enc_0.1-3     knitr_1.27         
 ##  [4] leaflet_2.0.3       rCharts_0.4.5       reshape2_1.4.3     
 ##  [7] RColorBrewer_1.1-2  maps_3.3.0          maptools_0.9-9     
-## [10] spatstat_1.61-0     rpart_4.1-13        nlme_3.1-137       
-## [13] spatstat.data_1.4-0 rgeos_0.5-3         rgdal_1.4-8        
+## [10] spatstat_1.63-0     rpart_4.1-15        nlme_3.1-142       
+## [13] spatstat.data_1.4-3 rgeos_0.5-3         rgdal_1.4-8        
 ## [16] sp_1.3-2            lattice_0.20-38     ggplot2_3.2.1      
-## [19] dplyr_0.8.3         plyr_1.8.4         
+## [19] dplyr_0.8.3         plyr_1.8.5         
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.2            deldir_0.1-23         assertthat_0.2.1     
-##  [4] digest_0.6.22         mime_0.7              R6_2.4.0             
-##  [7] evaluate_0.14         tensor_1.5            pillar_1.4.2         
-## [10] rlang_0.4.1           lazyeval_0.2.2        whisker_0.4          
-## [13] Matrix_1.2-15         goftest_1.2-2         rmarkdown_1.16       
-## [16] labeling_0.3          stringr_1.4.0         foreign_0.8-71       
-## [19] htmlwidgets_1.5.1     polyclip_1.10-0       munsell_0.5.0        
-## [22] shiny_1.4.0           compiler_3.5.2        httpuv_1.5.2         
-## [25] xfun_0.10             pkgconfig_2.0.3       mgcv_1.8-26          
-## [28] htmltools_0.4.0       tidyselect_0.2.5      tibble_2.1.3         
-## [31] codetools_0.2-15      crayon_1.3.4          withr_2.1.2          
-## [34] later_1.0.0           grid_3.5.2            jsonlite_1.6         
-## [37] xtable_1.8-4          gtable_0.3.0          magrittr_1.5         
-## [40] scales_1.0.0          stringi_1.4.3         promises_1.1.0       
-## [43] spatstat.utils_1.15-0 tools_3.5.2           RJSONIO_1.3-1.1      
-## [46] glue_1.3.1            purrr_0.3.3           crosstalk_1.0.0      
-## [49] abind_1.4-5           fastmap_1.0.1         yaml_2.2.0           
-## [52] colorspace_1.4-1</code></pre>
+##  [1] Rcpp_1.0.3            deldir_0.1-23         assertthat_0.2.1     
+##  [4] digest_0.6.23         mime_0.8              R6_2.4.1             
+##  [7] evaluate_0.14         tensor_1.5            pillar_1.4.3         
+## [10] rlang_0.4.3           lazyeval_0.2.2        whisker_0.4          
+## [13] Matrix_1.2-18         goftest_1.2-2         rmarkdown_2.1        
+## [16] labeling_0.3          splines_3.6.2         stringr_1.4.0        
+## [19] foreign_0.8-72        htmlwidgets_1.5.1     polyclip_1.10-0      
+## [22] munsell_0.5.0         shiny_1.4.0           compiler_3.6.2       
+## [25] httpuv_1.5.2          xfun_0.12             pkgconfig_2.0.3      
+## [28] mgcv_1.8-31           htmltools_0.4.0       tidyselect_0.2.5     
+## [31] tibble_2.1.3          codetools_0.2-16      crayon_1.3.4         
+## [34] withr_2.1.2           later_1.0.0           grid_3.6.2           
+## [37] jsonlite_1.6          xtable_1.8-4          gtable_0.3.0         
+## [40] lifecycle_0.1.0       magrittr_1.5          scales_1.1.0         
+## [43] stringi_1.4.5         farver_2.0.3          promises_1.1.0       
+## [46] spatstat.utils_1.15-0 tools_3.6.2           RJSONIO_1.3-1.4      
+## [49] glue_1.3.1            purrr_0.3.3           crosstalk_1.0.0      
+## [52] abind_1.4-5           fastmap_1.0.1         yaml_2.2.1           
+## [55] colorspace_1.4-1</code></pre>
 </div>
 
 
