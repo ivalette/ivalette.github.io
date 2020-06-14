@@ -1,0 +1,265 @@
+---
+---
+<br clear="all" />
+
+<img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left">
+
+<br clear="all" />
+<br clear="all" />
+
+```{r setup, warning=FALSE, include=FALSE}
+library(tidyverse)
+library(gutenbergr) 
+library(kableExtra)
+library(MCMCpack)
+```
+
+## Topic Models Blog Serie
+
+This is the second blog of a six part serie on "Learning, training and scaling topic models: a practical approach in R". The serie covers:
+
+  1. What [are topic models](what_is_topic_modeling.html) (TM)?
+  
+  2. A little introduction to LDA
+  
+  3. A gentle look into the [Bayesian statistics](bayesian_statistics.html) behind TM
+
+  4. How to [train TM and visualise outputs](how_to_train_TM_in_r.html) in R?
+
+  5. Setting up [AWS with R for scaling](how_to_run_R_on_aws.html) TM
+
+  6. How does the TM algorithm work under the hood? (To come)
+  
+We will use 3 of Jane Austen's books to illustrate our examples: Sense and Sensibility, Pride and Prejudice and Persuasion. We will download and process the Austen corpus with the help of the gutenbergr package.
+
+
+## LDA - Latent Dirichlet Allocation
+
+The Latent Dirichlet Allocation (LDA) is one of the most popular algorithms used for topic modeling and the one we will look more closely into. First, what does the name "Latent Dirichlet Allocation" actually mean? 
+
+### Latent variables
+
+"Latent" refers to the missing variables or the hidden structures of the probabilistic process that we are going to estimate. These hidden structures as we saw in chapter 1 are:
+
+- the word proportion per topic also called the topic distribution over words (Dirichlet distribution)
+
+- the topic proportion per document (Dirichlet distribution)
+
+- the topic assignments or topic allocation (Multinomial distribution)
+
+
+### Allocation
+"Allocation" refers to the way the algorithm works. In LDA, a word is associated with only 1 topic and this is called the topic assignment or topic allocation: The hidden topic assignment comes from a multinomial distribution Z with parameter theta (θ).
+
+
+### Dirichlet Distribution
+#### Introduction to the Dirichlet Distribution
+Let's talk a little about the [Dirichlet distribution](https://www.rdocumentation.org/packages/DirichletReg/versions/0.6-3/topics/Dirichlet) as it is an important concept to grasp in order to parametrize the LDA model in R. So, what is a **Dirichlet Distribution**? It is a probability distribution of a **probability simplex**. What is a probability simplex? It is a non-negative vector whose values sum up to 1 or 100%, like so:
+
+- (0.6, 0.4)
+
+- (0.2, 0.1, 0.7)
+
+- (3%, 28%, 18%, 18%)  Remember the description of document 1 in chapter 1
+
+The Dirichlet distribution is parametrised by **alpha** (α) which controls the mean, shape and sparsity of the distribution.
+
+
+#### Dirichlet similations in R
+
+Let's look at an example: let's say we have a collection of 3 documents where we know that we are dealing with 6 topics and α=0.1. We would like to visualize the topic proportion for these 3 documents. 
+
+```{r, Dirichlet2, fig.height=4, fig.width=12}
+set.seed(442288)
+alpha <- 0.1
+documents <- 3
+topics <- 6
+x <- t(rdirichlet(documents, rep(alpha, topics)))
+
+dt <- data.frame(document = sort(rep(1:3, 6)),
+                 topic = rep(1:6, 3), 
+                 topic_prop = as.vector(x)) 
+dt %>% 
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+As you can see from the similation, the sum of the topic proprotion per document equals to 1.
+
+```{r, fig.align="center"}
+dt %>% 
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) + 
+  geom_point(color = "blue") + 
+  geom_linerange(color = "blue") + 
+  facet_wrap(~ document) + 
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, colour = "black")) +
+  ylab("Topic Proportion") +
+  scale_x_continuous("Topic IDs", breaks = c(1:6))
+
+```
+
+We can see from the graph above that the topic proportions for the 3 documents are:
+
+- mostly concentrated around topic 5 and 2 for document 1
+
+- mostly concentrated around topic 4, 3 and 6 for document 2
+
+- mostly concentrated around topic 4, 3, 2,  and 1 for document 3
+
+
+#### The parameter alpha
+
+Let's now look at another example in R to get the intuition behind the parametrisation of the Dirichlet parameter α. Let's plot 4 Dirichlet distributions with different alpha parameters: α=0.01, α=0.1, α=1, α=100 for 3 documents and 6 topics. The graph below shows the results for the topic proportion per document. We see from the simulations below that the lower the alpha, the more concentrated the proportion of topic around a few dominant topics. The larger the alpha, the more the proportion of topics are scattered across many topics (flatter distribution) up to the point where for large alpha, the distribution is almost uniformally distributed equally on all topics.
+
+```{r, Dirichlet, fig.height=4, fig.width=9, fig.align="center"}
+
+plot_dirichlet <- function(alpha){
+set.seed(442288)
+documents <- 3
+topics <- 6
+x <- t(rdirichlet(documents, rep(alpha, topics)))
+
+dt <- data.frame(document = sort(rep(1:3,6)),
+                 topic = rep(1:6,3), 
+                 topic_prop = as.vector(x)) 
+
+dt %>% 
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0,ymax = topic_prop)) + 
+  geom_point(color = "blue") + 
+  geom_linerange(color = "blue") + 
+  facet_wrap(~document) + 
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, color = "black")) +
+  ylab("Topic Proportion") +
+  scale_x_continuous("Topic IDs", breaks = c(1:6))
+}
+
+#smallest alpha
+plot_dirichlet(0.01)
+#small alpha
+plot_dirichlet(0.1)
+# alpha of 1
+plot_dirichlet(1)
+# large alpha
+plot_dirichlet(100)
+```
+
+
+#### Symmetric versus Asymmetric Alpha Parameters
+The dirichlet parameter α is a vector. This vector is called **symetric** when all the elements that make up the vector α have the same value. Similarly, the dirichlet parameter will be called **asymmetrical** when the vector have a different value. Literature shows that asymmetrical parameters tend to produce slightly better LDA models. Let's get the intuition for why this happens?
+
+So first what happens when we draws with a vector alpha of 2 elements?
+
+```{r, asym, warning=FALSE, fig.width=12, fig.height=4}
+set.seed(224488)
+alpha <- c(2, 0.1)
+documents <- 3
+topics <- 6
+x <- t(rdirichlet(documents, rep(alpha, topics)))
+
+x %>% 
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+
+dt <- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
+                 topic=rep(1:6, 3 * length(alpha)), 
+                 topic_prop=as.vector(x))
+```
+
+The table above shows that for each document, we get 12 proportions instead of just 6 for the 6 topics. Six of the proportions are drawn with an alpha of 2 and six with an alpha of 0.1. The sum per document (here we refer to the sum per column) is still equals to 1 or 100%.
+
+```{r, fig.align="center"}
+dt %>% group_by(document, topic) %>% 
+  summarise(topic_prop = sum(topic_prop)) %>% 
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) + 
+  geom_point(colour = "blue") + 
+  geom_linerange(color = "blue") + 
+  facet_wrap(~ document) + 
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, color = "black")) +
+  ylab("Topic Proportion") +
+  scale_x_continuous("Topic Id", breaks = c(1:6))
+```
+
+As we can see from the 3 documents above, the Dirichlet distribution per topic has now 2 random sets of values per topic: one set generated from an α = 2 and another for α = 0.1. With each element of the α vector, we increase the complexity of the topic proportion distribution per document. This higher level of complexity introduced by asymetric dirichlet parameter tends to replicate the complexity of real world topic proportion per document found in a corpus. 
+
+The graphs below shows how this new level of complexity is introduced in the draws with various aymetrical α vectors.
+
+
+```{r,asym2, fig.height=4, fig.width=12, warning=FALSE}
+plot_dirichlet <- function(alpha){
+set.seed(1234)
+documents <- 3
+topics <- 6
+x <- t(rdirichlet(documents, rep(alpha, topics)))
+
+dt <- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
+                 topic=rep(1:6,3* length(alpha)), 
+                 topic_prop=as.vector(x)) 
+
+dt %>%
+  group_by(document, topic) %>% 
+  summarise(topic_prop = sum(topic_prop)) %>% 
+  ggplot(aes(x = topic,y = topic_prop, ymin = 0,ymax = topic_prop)) + 
+  geom_point(color = "blue") + 
+  geom_linerange(color = "blue") + 
+  facet_wrap(~document) + 
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, color = "black")) +
+  ylab("Topic Proportion") +
+  scale_x_continuous("Topic Id", breaks = c(1:6))
+}
+
+#smallish alpha
+plot_dirichlet(c(0.1, 0.08, 0.11, 0.22))
+# alpha close to 1
+plot_dirichlet(c(1 , 0.8, 1.3))
+# large alpha 
+plot_dirichlet(c(0.01, 0.25, 0.85))
+```
+
+
+#### Recommended values for Dirichlet Parameters in LDA
+When fitting LDA models, some methods requires the dirichlet parameters to be set apriori. Griffiths and Steyvers (2004) recommends:
+
+- for the Dirichlet distribution of the topic proportion per document, the alpha parameter α should be set to 50 / K where K is the number of topic to be found in the corpus.
+
+- For the distribution of the word proportion per topic, the parameter of the Dirichlet, eta should be set to 0.1.
+
+
+## Conclusion and Next Chapter
+We have now introduced what the LDA algorithms uncover and how the Dirichlet distribution in an important concept for the parametrisation of the TM.
+
+In the next chapter we will gently look into the Bayesian statistics of topic modeling.
+
+
+
+## Learning Ressources
+
+- Dirichlet function in R: https://www.rdocumentation.org/packages/DirichletReg/versions/0.6-3/topics/Dirichlet
+
+- Dirichlet wikipedia page: https://en.wikipedia.org/wiki/Dirichlet_distribution
+
+- Professor Blei KDD Tutorial: http://www.ccs.neu.edu/home/jwvdm/teaching/cs6220/fall2016/assets/pdf/blei-kdd-tutorial.pdf
+
+- Professor Blei lectures on Topic models at Machine Learning Summer School (MLSS), Cambridge 2009 part 1 & 2 with slides: http://videolectures.net/mlss09uk_blei_tm/
+
+- Introduction into Latent Dirichlet Allocation by Professor Bobby B. Lyle at SMU School of Engineering URL: https://pdfs.semanticscholar.org/presentation/7f54/8af3930a4f10a012a46bc7956ac6da8c38e3.pdf
+
+
+
+
+## References
+
+- Blei DM, Ng AY, Jordan MI (2003b). “Latent Dirichlet Allocation.” Journal of Machine Learning Research, 3, 993–1022, page 1009. URL http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf
+
+- Griffiths TL, Steyvers M (2004). “Finding Scientific Topics.” Proceedings of the National Academy of Sciences of the United States of America, 101, 5228–5235. URL http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf
+
+- Grün, B. & Hornik, K. (2011). topicmodels: An R Package for Fitting Topic Models.. Journal of Statistical Software, 40(13), 1-30.
+
+- Ponweiser M., "Latent Dirichlet Allocation in R", Diploma Thesis, Institute for Statistics and Mathematics, 2012. URL http://epub.wu.ac.at/3558/1/main.pdf
+
+
+
+
