@@ -1,0 +1,112 @@
+---
+---
+<br clear="all" />
+
+<img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left">
+
+<br clear="all" />
+<br clear="all" />
+
+## Create Maps in R using Base, GoogleVis, leaflet and rCharts
+The following code will help you build your own maps in R using base plotting, Lattice,  ggplot2, the GoogleVis Chart API, Rcharts and leaflet. This blog was first published in 2015 and updated in 2019. Enjoy and have fun with it!
+
+## Prerequisites
+You may want to download the metadata files available on my GitHub repo [here](https://github.com/ivalette/Rmaps_norway):
+
+1. The first shapefile of Norway is from the website of [the Norwegian Mapping Authority (Kartverket)](http://www.kartverket.no). It was downloaded back in 2015. We will use the shapefile called NO_Arealdekke_pol.shp. Don't forget to refer to them when using the map and please read the [terms of use](https://www.kartverket.no/en/data/Terms-of-use/). 
+
+2. The second shapefile is from the website of the Global Administrative Areas at this [location](http://gadm.org/). I downloaded the shapefile for Norway back in 2015. You can also download shapefiles for other countries there. 
+
+3. You may also need a file containing the X-Y coordinate of spatial locations you want to plot. In our case, we will use a file containing the Norwegian postal code areas. This file is available [here](http://www.erikbolstad.no/postnummer-koordinatar/txt/postnummer.csv). 
+
+
+## Building the Map of Norway in R
+
+```{r message=FALSE, warning=FALSE}
+library(plyr)
+library(dplyr)         
+library(ggplot2)      
+library(lattice)      
+library(rgdal)        
+library(rgeos)        
+library(spatstat)     
+library(sp)           
+library(maptools)     
+library(maps)         
+library(RColorBrewer) 
+library(grDevices)    
+library(reshape2)     
+library(leaflet)
+library(knitr)        
+library(base64enc) 
+suppressPackageStartupMessages(library(googleVis)) 
+```
+
+
+### Building Interactive Maps in R using GoogleVis
+Now let's say we want to visualize a variable called profit and compare results across Nordic countries. We want the results to be shown in an interactive map. We use the R package called 'Googlevis' to do this. The basic idea behind the GoogleVis package is:
+
+1. The R function creates an HTML page
+
+2. The HTML page calls the Google Charts API
+
+3. The results are displayed with an interactive HTML graphic
+
+Please note that, you can choose to change the map settings to a European map using region="150" in the GvisGeoChart command line. The default setting shows a world map. See [GoogleVis Examples](http://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html) on how to get started with the GoogleVis package. 
+
+````{r map8, results = 'asis'}
+op <- options(gvis.plot.tag = 'chart')
+revenue <- data.frame(Country = c("Norway", "Sweden", "Denmark", "Finland", "Iceland"),
+                      Profit = c(10, 3, 5, 7, 5), 
+                      stringsAsFactors = F)
+nordic <- gvisGeoChart(revenue, 
+                       locationvar = "Country",
+                       colorvar = "Profit",
+                       options = list(width = 600, height = 400,region = "154"))
+plot(nordic)
+```
+
+### Building Interactive Maps in R using rCharts and leaflet
+Finally, we want to visualize interactively a street view of Oslo, the capital of Norway, with the leaflet and rCharts package in R and plot some popups. rCharts is an incredibly easy way to create interactive javascript visualizations using R. 
+
+See [leaflet](https://rstudio.github.io/leaflet/) for further details on how to get started with leaflet.
+
+```{r, map9, results = 'asis', comment = NA}
+map3 <-  leaflet() %>%
+  addTiles() %>% 
+  addMarkers(lng = 10.7246670, lat = 59.9140100, popup = "Hi. I am a popup") %>% 
+        addMarkers(lng = 10.7645700,  lat = 59.9085200, popup = "Hello Oslo!")
+map3
+```
+
+
+## Acknowledgements and References
+
+Thanks to Brian Caffo, Jeff Leek and Roger Peng from the John Hopkins Bloomberg School of Public Health, Department of Biostatistics. Your Data Science Specialization on Coursera inspired me.
+
+Thanks a lot to the Norwegian Mapping Authority (Kartverket) for sharing shapefiles with data scientists. 
+
+A big big thanks to Karl Ove Hufthammer! His wonderful blog was a great source of inspiration and a main reference when writing this blog. The code for the Voronoi Tessellation is all his, I just copied it. 
+
+A big thanks to Erik Bolstad for making the csv files with postal code coordinates available in Norway.
+
+Thanks to the Global Administrative Areas for giving access to shapefiles of the world.
+
+
+## Inspirational Blogs For Building Maps and Working with Spatial Objects
+
+http://zevross.com/blog/2014/07/16/mapping-in-r-using-the-ggplot2-package/
+
+http://cran.r-project.org/web/packages/googleVis/vignettes/googleVis_examples.html
+
+https://github.com/hadley/ggplot2/wiki/plotting-polygon-shapefiles
+
+
+## R Session Info
+```{r}
+sessionInfo()
+```
+
+
+
+
