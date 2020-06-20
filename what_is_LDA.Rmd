@@ -1,3 +1,4 @@
+
 ---
 ---
 <br clear="all" />
@@ -12,7 +13,10 @@ library(tidyverse)
 library(gutenbergr) 
 library(kableExtra)
 library(MCMCpack)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.align="center", fig.width = 10)
 ```
+# A little introduction to LDA
 
 ## Topic Models Blog Serie
 
@@ -69,7 +73,7 @@ The Dirichlet distribution is parametrised by **alpha** (α) which controls the 
 
 Let's look at an example: let's say we have a collection of 3 documents where we know that we are dealing with 6 topics and α=0.1. We would like to visualize the topic proportion for these 3 documents. 
 
-```{r, Dirichlet2, fig.height=4, fig.width=12}
+```{r}
 set.seed(442288)
 alpha <- 0.1
 documents <- 3
@@ -86,17 +90,16 @@ dt %>%
 
 As you can see from the similation, the sum of the topic proprotion per document equals to 1.
 
-```{r, fig.align="center"}
-dt %>% 
-  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) + 
-  geom_point(color = "blue") + 
-  geom_linerange(color = "blue") + 
-  facet_wrap(~ document) + 
+```{r}
+dt %>%
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) +
+  geom_point(color = "blue") +
+  geom_linerange(color = "blue") +
+  facet_wrap(~ document) +
   scale_y_continuous(lim = c(0,1)) +
   theme(panel.border = element_rect(fill = 0, colour = "black")) +
   ylab("Topic Proportion") +
   scale_x_continuous("Topic IDs", breaks = c(1:6))
-
 ```
 
 We can see from the graph above that the topic proportions for the 3 documents are:
@@ -112,7 +115,7 @@ We can see from the graph above that the topic proportions for the 3 documents a
 
 Let's now look at another example in R to get the intuition behind the parametrisation of the Dirichlet parameter α. Let's plot 4 Dirichlet distributions with different alpha parameters: α=0.01, α=0.1, α=1, α=100 for 3 documents and 6 topics. The graph below shows the results for the topic proportion per document. We see from the simulations below that the lower the alpha, the more concentrated the proportion of topic around a few dominant topics. The larger the alpha, the more the proportion of topics are scattered across many topics (flatter distribution) up to the point where for large alpha, the distribution is almost uniformally distributed equally on all topics.
 
-```{r, Dirichlet, fig.height=4, fig.width=9, fig.align="center"}
+```{r}
 
 plot_dirichlet <- function(alpha){
 set.seed(442288)
@@ -151,7 +154,7 @@ The dirichlet parameter α is a vector. This vector is called **symetric** when 
 
 So first what happens when we draws with a vector alpha of 2 elements?
 
-```{r, asym, warning=FALSE, fig.width=12, fig.height=4}
+```{r}
 set.seed(224488)
 alpha <- c(2, 0.1)
 documents <- 3
@@ -162,23 +165,26 @@ x %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 
-dt <- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
-                 topic=rep(1:6, 3 * length(alpha)), 
-                 topic_prop=as.vector(x))
 ```
 
 The table above shows that for each document, we get 12 proportions instead of just 6 for the 6 topics. Six of the proportions are drawn with an alpha of 2 and six with an alpha of 0.1. The sum per document (here we refer to the sum per column) is still equals to 1 or 100%.
 
-```{r, fig.align="center"}
-dt %>% group_by(document, topic) %>% 
-  summarise(topic_prop = sum(topic_prop)) %>% 
-  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) + 
-  geom_point(colour = "blue") + 
-  geom_linerange(color = "blue") + 
-  facet_wrap(~ document) + 
+```{r, pb, eval = FALSE}
+dt <- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
+                 topic=rep(1:6, 3 * length(alpha)),
+                 topic_prop=as.vector(x))
+
+dt %>%
+  group_by(document, topic) %>%
+  summarise(topic_prop = sum(topic_prop)) %>%
+  ggplot(., aes(x = topic, y = topic_prop,
+                ymin = 0, ymax = topic_prop)) +
+  geom_point(colour = "blue") +
+  geom_linerange(color = "blue") +
+  facet_wrap(.~ document) +
   scale_y_continuous(lim = c(0,1)) +
   theme(panel.border = element_rect(fill = 0, color = "black")) +
-  ylab("Topic Proportion") +
+  labs(y ="Topic Proportion") +
   scale_x_continuous("Topic Id", breaks = c(1:6))
 ```
 
@@ -187,7 +193,7 @@ As we can see from the 3 documents above, the Dirichlet distribution per topic h
 The graphs below shows how this new level of complexity is introduced in the draws with various aymetrical α vectors.
 
 
-```{r,asym2, fig.height=4, fig.width=12, warning=FALSE}
+```{r, pb2, eval = FALSE}
 plot_dirichlet <- function(alpha){
 set.seed(1234)
 documents <- 3
@@ -195,16 +201,16 @@ topics <- 6
 x <- t(rdirichlet(documents, rep(alpha, topics)))
 
 dt <- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
-                 topic=rep(1:6,3* length(alpha)), 
-                 topic_prop=as.vector(x)) 
+                 topic=rep(1:6,3* length(alpha)),
+                 topic_prop=as.vector(x))
 
 dt %>%
-  group_by(document, topic) %>% 
-  summarise(topic_prop = sum(topic_prop)) %>% 
-  ggplot(aes(x = topic,y = topic_prop, ymin = 0,ymax = topic_prop)) + 
-  geom_point(color = "blue") + 
-  geom_linerange(color = "blue") + 
-  facet_wrap(~document) + 
+  group_by(document, topic) %>%
+  summarise(topic_prop = sum(topic_prop), .groups = "drop") %>%
+  ggplot(aes(x = topic,y = topic_prop, ymin = 0,ymax = topic_prop)) +
+  geom_point(color = "blue") +
+  geom_linerange(color = "blue") +
+  facet_wrap(~document) +
   scale_y_continuous(lim = c(0,1)) +
   theme(panel.border = element_rect(fill = 0, color = "black")) +
   ylab("Topic Proportion") +
@@ -215,7 +221,7 @@ dt %>%
 plot_dirichlet(c(0.1, 0.08, 0.11, 0.22))
 # alpha close to 1
 plot_dirichlet(c(1 , 0.8, 1.3))
-# large alpha 
+# large alpha
 plot_dirichlet(c(0.01, 0.25, 0.85))
 ```
 

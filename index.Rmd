@@ -11,11 +11,11 @@
 
 I am a Data Scientist at VG, Norway's largest news destination. 
 
-Outside the newsroom, my lastest NLP projects include the development and deployment of several [topic models](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) via a [plumber api](https://www.rplumber.io). I do my own data engineering.  [Shiny apps](https://shiny.rstudio.com) are some of my favorite tools for prototyping and data visualization. 
+Outside the newsroom, my lastest NLP projects include the development and deployment of several [topic models with LDA](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) via a [plumber api](https://www.rplumber.io). [Shiny apps](https://shiny.rstudio.com) are some of my favorite tools for prototyping, visualizing data and creating dashboards. [Rmarkdown](https://rmarkdown.rstudio.com) helps me document and reproduce. 
 
-Inside the newsroom, I was honored to contribute to a Norwegian Pulitzer diploma project in 2018 for [Tolga](https://www.vg.no/spesial/2018/pu-tilskuddene/) and to work on the Norwegian Pulitzer winning project of 2016 for [The unlawful use of physical restraints in Norwegian psychiatric wards](https://www.vg.no/spesial/2016/tvangsprotokollene/).
+Inside the newsroom, I was honored to contribute to 3 Norwegian Pulitzer winning projects in 2016, 2018 and 2019 for [The unlawful use of physical restraints in Norwegian psychiatric wards](https://www.vg.no/spesial/2016/tvangsprotokollene/), [Tolga](https://www.vg.no/spesial/2018/pu-tilskuddene/) and the [consequences of the Health Reform.](https://www.vg.no/nyheter/innenriks/i/K34BeX/vg-vant-skup-prisen)
 
-I am a R enthusiast and co-founder of the [RLadies Oslo](https://www.meetup.com/rladies-oslo/events/) chapter. I have a master degree in Economics from [The Norwegian Business School BI](https://www.bi.no), where I am a guess lecturer. 
+I am a R enthusiast and co-founder of the [RLadies Oslo](https://www.meetup.com/rladies-oslo/events/) chapter. I have a master degree in Economics from [The Norwegian Business School BI](https://www.bi.no), where I am a guest lecturer.
 
 
 

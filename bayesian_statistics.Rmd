@@ -1,3 +1,4 @@
+
 ---
 ---
 <br clear="all" />
@@ -6,6 +7,8 @@
 
 <br clear="all" />
 <br clear="all" />
+
+# A gentle look into the Bayesian statistics
 
 ## Topic Models Blog Serie
 

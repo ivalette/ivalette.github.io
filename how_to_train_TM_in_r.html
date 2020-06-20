@@ -281,7 +281,7 @@ $(document).ready(function () {
   <a href="rstudioconf20.html">rstudio::conf</a>
 </li>
 <li>
-  <a href="map_v2.html">Build Maps in R</a>
+  <a href="thesaurus.html">Thesaurus</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -319,6 +319,8 @@ $(document).ready(function () {
 <p><br clear="all" /></p>
 <p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
 <p><br clear="all" /> <br clear="all" /></p>
+<div id="how-to-train-tm-and-visualise-outputs-in-r" class="section level1">
+<h1>How to train TM and visualise outputs in R?</h1>
 <div id="topic-models-blog-serie" class="section level2">
 <h2>Topic Models Blog Serie</h2>
 <p>This is the fourth blog of a six part serie on “Learning, training and scaling topic models: a practical approach in R”. The serie covers:</p>
@@ -466,7 +468,11 @@ dtm &lt;- document_term_matrix(x = dtf)</code></pre>
 <li><p>maximization: Deveaud2014, Griffiths2004</p></li>
 </ul>
 <p>Keep in mind that this exercise is the most computationally expensive part of your code because you need to train a lot of models in order to assess the ideal number of topic K on the entirity of the corpus. Even if you hook R to the most powerful EC2 AWS instance optimized for computation, you also may need to parallelize your code for efficiency. In the example below, we have used 50 CPU core to process models simultaneously.</p>
-<pre class="r"><code>result &lt;- FindTopicsNumber(
+<pre class="r"><code>if (Sys.getenv(&quot;RSTUDIO&quot;) == &quot;1&quot; &amp;&amp; !nzchar(Sys.getenv(&quot;RSTUDIO_TERM&quot;)) &amp;&amp; 
+    Sys.info()[&quot;sysname&quot;] == &quot;Darwin&quot; &amp;&amp; getRversion() == &quot;4.0.1&quot;) {
+  parallel:::setDefaultClusterOptions(setup_strategy = &quot;sequential&quot;)
+}
+result &lt;- FindTopicsNumber(
   dtm,
   topics = c(2, 3, 4, 5, 6, 7, 8, 10, 25),
   metrics = c(&quot;Griffiths2004&quot;, &quot;CaoJuan2009&quot;,  &quot;Deveaud2014&quot;, &quot;Arun2010&quot;),
@@ -616,6 +622,7 @@ doc %&gt;%
 <li><p>Cao Juan, Xia Tian, Li Jintao, Zhang Yongdong, and Tang Sheng. 2009. A density-based method for adaptive lDA model selection. Neurocomputing — 16th European Symposium on Artificial Neural Networks 2008 72, 7–9: 1775–1781. <a href="http://doi.org/10.1016/j.neucom.2008.06.011" class="uri">http://doi.org/10.1016/j.neucom.2008.06.011</a></p></li>
 <li><p>Romain Deveaud, Éric SanJuan, and Patrice Bellot. 2014. Accurate and effective latent concept modeling for ad hoc information retrieval. Document numérique 17, 1: 61–84. <a href="http://doi.org/10.3166/dn.17.1.61-84" class="uri">http://doi.org/10.3166/dn.17.1.61-84</a></p></li>
 </ul>
+</div>
 </div>
 
 

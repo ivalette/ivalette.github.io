@@ -1,3 +1,4 @@
+
 ---
 ---
 <br clear="all" />
@@ -6,6 +7,8 @@
 
 <br clear="all" />
 <br clear="all" />
+
+# Setting up AWS with R for scaling TM
 
 ## Topic Models Blog Serie
 

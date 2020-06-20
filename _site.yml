@@ -6,8 +6,9 @@ navbar:
       href: what_is_topic_modeling.html
     - text: "rstudio::conf"
       href: rstudioconf20.html  
-    - text: "Build Maps in R"
-      href: map_v2.html
+    - text: "Thesaurus"
+      href: thesaurus.html
+      
   right:
     - icon: fa-github fa-lg
       href: http://github.com/ivalette

@@ -1,3 +1,4 @@
+
 ---
 ---
 <br clear="all" />
@@ -6,6 +7,8 @@
 
 <br clear="all" />
 <br clear="all" />
+
+# How to train TM and visualise outputs in R?
 
 ## Topic Models Blog Serie
 
@@ -195,6 +198,10 @@ Keep in mind that this exercise is the most computationally expensive part of yo
 
 
 ```{r cache=TRUE,  fig.align="center", message = FALSE}
+if (Sys.getenv("RSTUDIO") == "1" && !nzchar(Sys.getenv("RSTUDIO_TERM")) && 
+    Sys.info()["sysname"] == "Darwin" && getRversion() == "4.0.1") {
+  parallel:::setDefaultClusterOptions(setup_strategy = "sequential")
+}
 result <- FindTopicsNumber(
   dtm,
   topics = c(2, 3, 4, 5, 6, 7, 8, 10, 25),

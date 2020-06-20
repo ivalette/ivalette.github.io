@@ -282,7 +282,7 @@ $(document).ready(function () {
   <a href="rstudioconf20.html">rstudio::conf</a>
 </li>
 <li>
-  <a href="map_v2.html">Build Maps in R</a>
+  <a href="thesaurus.html">Thesaurus</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -320,6 +320,8 @@ $(document).ready(function () {
 <p><br clear="all" /></p>
 <p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
 <p><br clear="all" /> <br clear="all" /></p>
+<div id="a-little-introduction-to-lda" class="section level1">
+<h1>A little introduction to LDA</h1>
 <div id="topic-models-blog-serie" class="section level2">
 <h2>Topic Models Blog Serie</h2>
 <p>This is the second blog of a six part serie on “Learning, training and scaling topic models: a practical approach in R”. The serie covers:</p>
@@ -592,16 +594,16 @@ topic_prop
 </tbody>
 </table>
 <p>As you can see from the similation, the sum of the topic proprotion per document equals to 1.</p>
-<pre class="r"><code>dt %&gt;% 
-  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) + 
-  geom_point(color = &quot;blue&quot;) + 
-  geom_linerange(color = &quot;blue&quot;) + 
-  facet_wrap(~ document) + 
+<pre class="r"><code>dt %&gt;%
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) +
+  geom_point(color = &quot;blue&quot;) +
+  geom_linerange(color = &quot;blue&quot;) +
+  facet_wrap(~ document) +
   scale_y_continuous(lim = c(0,1)) +
   theme(panel.border = element_rect(fill = 0, colour = &quot;black&quot;)) +
   ylab(&quot;Topic Proportion&quot;) +
   scale_x_continuous(&quot;Topic IDs&quot;, breaks = c(1:6))</code></pre>
-<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-2-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>We can see from the graph above that the topic proportions for the 3 documents are:</p>
 <ul>
 <li><p>mostly concentrated around topic 5 and 2 for document 1</p></li>
@@ -635,16 +637,16 @@ dt %&gt;%
 
 #smallest alpha
 plot_dirichlet(0.01)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/Dirichlet-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#small alpha
 plot_dirichlet(0.1)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/Dirichlet-2.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-2.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># alpha of 1
 plot_dirichlet(1)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/Dirichlet-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-3.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># large alpha
 plot_dirichlet(100)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/Dirichlet-4.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-4.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="symmetric-versus-asymmetric-alpha-parameters" class="section level4">
 <h4>Symmetric versus Asymmetric Alpha Parameters</h4>
@@ -795,22 +797,23 @@ x %&gt;%
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>dt &lt;- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
-                 topic=rep(1:6, 3 * length(alpha)), 
-                 topic_prop=as.vector(x))</code></pre>
 <p>The table above shows that for each document, we get 12 proportions instead of just 6 for the 6 topics. Six of the proportions are drawn with an alpha of 2 and six with an alpha of 0.1. The sum per document (here we refer to the sum per column) is still equals to 1 or 100%.</p>
-<pre class="r"><code>dt %&gt;% group_by(document, topic) %&gt;% 
-  summarise(topic_prop = sum(topic_prop)) %&gt;% 
-  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) + 
-  geom_point(colour = &quot;blue&quot;) + 
-  geom_linerange(color = &quot;blue&quot;) + 
-  facet_wrap(~ document) + 
+<pre class="r"><code>dt &lt;- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
+                 topic=rep(1:6, 3 * length(alpha)),
+                 topic_prop=as.vector(x))
+
+dt %&gt;%
+  group_by(document, topic) %&gt;%
+  summarise(topic_prop = sum(topic_prop)) %&gt;%
+  ggplot(., aes(x = topic, y = topic_prop,
+                ymin = 0, ymax = topic_prop)) +
+  geom_point(colour = &quot;blue&quot;) +
+  geom_linerange(color = &quot;blue&quot;) +
+  facet_wrap(.~ document) +
   scale_y_continuous(lim = c(0,1)) +
   theme(panel.border = element_rect(fill = 0, color = &quot;black&quot;)) +
-  ylab(&quot;Topic Proportion&quot;) +
+  labs(y =&quot;Topic Proportion&quot;) +
   scale_x_continuous(&quot;Topic Id&quot;, breaks = c(1:6))</code></pre>
-<pre><code>## `summarise()` regrouping output by &#39;document&#39; (override with `.groups` argument)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>As we can see from the 3 documents above, the Dirichlet distribution per topic has now 2 random sets of values per topic: one set generated from an α = 2 and another for α = 0.1. With each element of the α vector, we increase the complexity of the topic proportion distribution per document. This higher level of complexity introduced by asymetric dirichlet parameter tends to replicate the complexity of real world topic proportion per document found in a corpus.</p>
 <p>The graphs below shows how this new level of complexity is introduced in the draws with various aymetrical α vectors.</p>
 <pre class="r"><code>plot_dirichlet &lt;- function(alpha){
@@ -820,16 +823,16 @@ topics &lt;- 6
 x &lt;- t(rdirichlet(documents, rep(alpha, topics)))
 
 dt &lt;- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
-                 topic=rep(1:6,3* length(alpha)), 
-                 topic_prop=as.vector(x)) 
+                 topic=rep(1:6,3* length(alpha)),
+                 topic_prop=as.vector(x))
 
 dt %&gt;%
-  group_by(document, topic) %&gt;% 
-  summarise(topic_prop = sum(topic_prop)) %&gt;% 
-  ggplot(aes(x = topic,y = topic_prop, ymin = 0,ymax = topic_prop)) + 
-  geom_point(color = &quot;blue&quot;) + 
-  geom_linerange(color = &quot;blue&quot;) + 
-  facet_wrap(~document) + 
+  group_by(document, topic) %&gt;%
+  summarise(topic_prop = sum(topic_prop), .groups = &quot;drop&quot;) %&gt;%
+  ggplot(aes(x = topic,y = topic_prop, ymin = 0,ymax = topic_prop)) +
+  geom_point(color = &quot;blue&quot;) +
+  geom_linerange(color = &quot;blue&quot;) +
+  facet_wrap(~document) +
   scale_y_continuous(lim = c(0,1)) +
   theme(panel.border = element_rect(fill = 0, color = &quot;black&quot;)) +
   ylab(&quot;Topic Proportion&quot;) +
@@ -837,17 +840,11 @@ dt %&gt;%
 }
 
 #smallish alpha
-plot_dirichlet(c(0.1, 0.08, 0.11, 0.22))</code></pre>
-<pre><code>## `summarise()` regrouping output by &#39;document&#39; (override with `.groups` argument)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/asym2-1.png" width="1152" /></p>
-<pre class="r"><code># alpha close to 1
-plot_dirichlet(c(1 , 0.8, 1.3))</code></pre>
-<pre><code>## `summarise()` regrouping output by &#39;document&#39; (override with `.groups` argument)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/asym2-2.png" width="1152" /></p>
-<pre class="r"><code># large alpha 
+plot_dirichlet(c(0.1, 0.08, 0.11, 0.22))
+# alpha close to 1
+plot_dirichlet(c(1 , 0.8, 1.3))
+# large alpha
 plot_dirichlet(c(0.01, 0.25, 0.85))</code></pre>
-<pre><code>## `summarise()` regrouping output by &#39;document&#39; (override with `.groups` argument)</code></pre>
-<p><img src="what_is_LDA_files/figure-html/asym2-3.png" width="1152" /></p>
 </div>
 <div id="recommended-values-for-dirichlet-parameters-in-lda" class="section level4">
 <h4>Recommended values for Dirichlet Parameters in LDA</h4>
@@ -882,6 +879,7 @@ plot_dirichlet(c(0.01, 0.25, 0.85))</code></pre>
 <li><p>Grün, B. &amp; Hornik, K. (2011). topicmodels: An R Package for Fitting Topic Models.. Journal of Statistical Software, 40(13), 1-30.</p></li>
 <li><p>Ponweiser M., “Latent Dirichlet Allocation in R”, Diploma Thesis, Institute for Statistics and Mathematics, 2012. URL <a href="http://epub.wu.ac.at/3558/1/main.pdf" class="uri">http://epub.wu.ac.at/3558/1/main.pdf</a></p></li>
 </ul>
+</div>
 </div>
 
 
