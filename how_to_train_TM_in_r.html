@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>how_to_train_TM_in_r.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Isabelle Valette</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="what_is_topic_modeling.html">Topic Models</a>
+</li>
+<li>
+  <a href="rstudioconf20.html">rstudio::conf</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="http://github.com/ivalette">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/valette_isa">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/isabellevalette/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><br clear="all" /></p>
+<p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
+<p><br clear="all" /> <br clear="all" /></p>
+<div id="how-to-train-tm-and-visualise-outputs-in-r" class="section level1">
+<h1>How to train TM and visualise outputs in R?</h1>
+<div id="topic-models-blog-serie" class="section level2">
+<h2>Topic Models Blog Serie</h2>
+<p>This is the fourth blog of a six part serie on “Learning, training and scaling topic models: a practical approach in R”. The serie covers:</p>
+<ol style="list-style-type: decimal">
+<li><p>What are <a href="what_is_topic_modeling.html">topic models</a> (TM)?</p></li>
+<li><p>A little <a href="what_is_LDA.html">introduction to LDA</a></p></li>
+<li><p>A gentle look into the <a href="bayesian_statistics.html">Bayesian statistics</a> behind TM</p></li>
+<li><p>How to train TM and visualise outputs in R?</p></li>
+<li><p>Setting up <a href="how_to_run_R_on_aws.html">AWS with R for scaling</a> TM</p></li>
+<li><p>How does the TM algorithm work under the hood? (To come)</p></li>
+</ol>
+<p>We will use 3 of Jane Austen’s books to illustrate our examples: Sense and Sensibility, Pride and Prejudice and Persuasion. We will download and process the Austen corpus with the help of the gutenbergr package.</p>
+<p>In this chapter, we will focus on the data preprocessing steps of data engineering needed to create the inputs to train the LDA model, namely the <a href="https://en.wikipedia.org/wiki/Document-term_matrix">document term matrix</a>. We will then assess the number of topics we expect to find in the Austen corpus. Finally, we will show the code used to parametrise the LDA model.</p>
+<p>But first, let’s download the 3 Jane Austen novels.</p>
+<pre class="r"><code>library(tidyverse) # The bible
+library(tidytext) # The text bible
+library(gutenbergr) # Jane Austen novels
+library(udpipe) # For lemmatization and text annotations
+library(Hmisc) # For %nin%
+library(ldatuning) # For computing the optimal number of topics
+library(topicmodels) # For training a LDA topic model
+library(wordcloud) # For visualizing wordclouds
+library(kableExtra) # for prettifying Rmarkdown tables</code></pre>
+<pre class="r"><code># Downloading novels by Jane Austen
+p &lt;- gutenberg_download(105) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)
+pp &lt;- gutenberg_download(1342) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)
+ss &lt;- gutenberg_download(161) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)
+
+austen &lt;- data.frame(id = c(1, 2, 3), 
+                     text = c(p, pp, ss), 
+                     stringsAsFactors = F)</code></pre>
+</div>
+<div id="data-engineering-for-text-annotation" class="section level2">
+<h2>Data Engineering for Text annotation</h2>
+<p>Text annotation is a key step of the data engineering process. We used the R package <a href="https://github.com/bnosac/udpipe">udpipe</a> for doing annotations. This package is available on <a href="https://CRAN.R-project.org/package=udpipe">CRAN</a>. According to <a href="https://www.r-bloggers.com/is-udpipe-your-new-nlp-processor-for-tokenization-parts-of-speech-tagging-lemmatization-and-dependency-parsing/">R-bloggers</a>, there aren’t many available tools which do all the text annotations:</p>
+<ul>
+<li><p>for multiple languages and</p></li>
+<li><p>do not depend on external software dependencies (java/python)</p></li>
+<li><p>which also allow you to train your own parsing &amp; tagging models.</p></li>
+</ul>
+<p>…Except R package udpipe which satisfies these 3 criteria.</p>
+<p>Udpipe enables tokenisation, speech tagging, lemmatization and dependency parsing. Dependency Parsing is the process of finding relationships between words- e.g “head” words and words which modify those heads. This allows you to look for words which may be far away from each other in the raw text but influence each other. Dependency parsing will not be used to build our LDA model as opposed to tokenisation, speech tagging and lemmatization.</p>
+<p>So, what are these concepts?</p>
+<ul>
+<li><p>Tokenization is the first step in cleaning data: it removes punctuation, spacing, handling of special characters and extract words from sentences. udpipe is also handy in the sense that it keeps track for you of document ids, paragraph and sentence id, token id, and so on, supposing that you have correct spacing/punctuation between, paragraph, sentences, etc.</p></li>
+<li><p>Lemmatization is an advanced form of stemming. The way it works is that it groups together the inflected forms of a word (walks, walked, walking) into its lemma (walk) so they can be analysed as a single item. An advantage of using udpipe is that it does for you the mapping between token and lemma.</p></li>
+<li><p>According to <a href="https://en.wikipedia.org/wiki/Part-of-speech_tagging">wikipedia</a>, part-of-speech tagging, also called POS tagging is the process of marking up a corpus as corresponding to a particular part of the speech based on both its definition and its context—i.e., its relationship with adjacent and related words in a phrase, sentence, or paragraph. A simplified form of this is commonly taught to school-age children, in the identification of words as nouns, verbs, adjectives, adverbs, etc. To train our LDA model, we used only Nouns, Verbs, Adjectives, Adverbs and Prop Nouns.</p></li>
+</ul>
+<p>Below is the code for text annotation in R with udpipe. This part of the code can be quite computationally expensive if you have a massive corpus of several hundred thousands documents. Hence the need to hook R up to AWS that we will see in the next chapter.</p>
+<p>More information about the quality of the udpipe model for text annotation for your language can be found <a href="https://github.com/jwijffels/udpipe.models.ud.2.0/blob/master/inst/udpipe-ud-2.0-170801/README">here</a>. As seen in the document, the models produce correct lemma and upos in more than 96% of the sentences. This is good enough for our purpose. I have tested both the Norwegian and English models.</p>
+<pre class="r"><code># Downloading and loading the udpipe English model for lemmatization
+model &lt;- udpipe_download_model(language = &quot;english&quot;)
+model &lt;- udpipe_load_model(model$file_model)
+
+# Lemmatization and text annotation
+annotated &lt;- udpipe_annotate(model, x = austen$text)
+annotated &lt;- as.data.frame(annotated)</code></pre>
+<p>Now let’s take a look at the annotated text and the variables in the table.</p>
+<pre class="r"><code>str(annotated)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    385093 obs. of  14 variables:
+##  $ doc_id       : chr  &quot;doc1&quot; &quot;doc1&quot; &quot;doc1&quot; &quot;doc1&quot; ...
+##  $ paragraph_id : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ sentence_id  : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ sentence     : chr  &quot;Persuasion by Jane Austen (1818) Chapter 1 Sir Walter Elliot, of Kellynch Hall, in Somersetshire, was a man who&quot;| __truncated__ &quot;Persuasion by Jane Austen (1818) Chapter 1 Sir Walter Elliot, of Kellynch Hall, in Somersetshire, was a man who&quot;| __truncated__ &quot;Persuasion by Jane Austen (1818) Chapter 1 Sir Walter Elliot, of Kellynch Hall, in Somersetshire, was a man who&quot;| __truncated__ &quot;Persuasion by Jane Austen (1818) Chapter 1 Sir Walter Elliot, of Kellynch Hall, in Somersetshire, was a man who&quot;| __truncated__ ...
+##  $ token_id     : chr  &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; ...
+##  $ token        : chr  &quot;Persuasion&quot; &quot;by&quot; &quot;Jane&quot; &quot;Austen&quot; ...
+##  $ lemma        : chr  &quot;persuasion&quot; &quot;by&quot; &quot;Jane&quot; &quot;Austen&quot; ...
+##  $ upos         : chr  &quot;NOUN&quot; &quot;ADP&quot; &quot;PROPN&quot; &quot;PROPN&quot; ...
+##  $ xpos         : chr  &quot;NN&quot; &quot;IN&quot; &quot;NNP&quot; &quot;NNP&quot; ...
+##  $ feats        : chr  &quot;Number=Sing&quot; NA &quot;Number=Sing&quot; &quot;Number=Sing&quot; ...
+##  $ head_token_id: chr  &quot;23&quot; &quot;3&quot; &quot;8&quot; &quot;3&quot; ...
+##  $ dep_rel      : chr  &quot;nsubj&quot; &quot;case&quot; &quot;compound&quot; &quot;flat&quot; ...
+##  $ deps         : chr  NA NA NA NA ...
+##  $ misc         : chr  &quot;SpacesAfter=\\s\\s\\s&quot; &quot;SpacesAfter=\\s\\s&quot; NA &quot;SpacesAfter=\\s\\s&quot; ...</code></pre>
+<p><img src="images/annotated.png" /></p>
+<p>Let’s visualize the number of lemmas based on their role in sentences.</p>
+<pre class="r"><code>annotated %&gt;% 
+  count(upos) %&gt;% 
+  arrange(n) %&gt;% 
+  ggplot(aes(x = reorder(upos, -n), y = n)) + 
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;lightblue&quot;) + 
+  theme(axis.title.x = element_blank())</code></pre>
+<p><img src="how_to_train_TM_in_r_files/figure-html/unnamed-chunk-4-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>Finally, we need to concatinate 2 consecutive PROPN so that the lemma “Jane” and “Austen” that follow each other in the same sentence, in the same paragraph, become the new lemma “Jane Austen”. Here is the code to do that.</p>
+<pre class="r"><code>annotated_concat &lt;- annotated %&gt;%
+  mutate(token_id = as.numeric(token_id),
+         temp = ifelse(upos == &quot;PROPN&quot;, NA, token_id)) %&gt;% 
+  tidyr::fill(temp) %&gt;% 
+  mutate(sk_id = ifelse(upos == &quot;PROPN&quot;, temp + 1, token_id)) %&gt;% 
+  group_by(doc_id, paragraph_id, sentence_id, sentence, sk_id) %&gt;% 
+  summarise(lemma = paste0(lemma, collapse = &quot; &quot;),
+            upos = first(upos), 
+            .groups = &quot;drop&quot;) %&gt;% 
+  ungroup()</code></pre>
+</div>
+<div id="the-document-term-matrix" class="section level2">
+<h2>The Document Term Matrix</h2>
+<p>First, a little word on the document-term matrix - what is it? It is the input data to train the LDA model. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei &amp; Lafferty 2009 (<a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf-idf</a>)</p>
+<p>During the final stages of the data preprosessing to create the document term matrix, we do the following:</p>
+<ul>
+<li><p>remove stop words</p></li>
+<li><p>only select the upos Noun, Verb, Adjective, Adverb and Prop Nouns</p></li>
+<li><p>remove words that appear only once in the entire Austen corpus</p></li>
+<li><p>visialise the most frequent words</p></li>
+<li><p>remove the word “Chapter”</p></li>
+<li><p>create the <a href="https://en.wikipedia.org/wiki/Document-term_matrix">document term matrix</a></p></li>
+</ul>
+<p>This is done in R as shown below. And let’s have a look at the word that are the most frequent in the Jane Austen’s novels we have chosen to look at.</p>
+<pre class="r"><code>stop &lt;- tidytext::stop_words
+
+dt &lt;- annotated_concat %&gt;% 
+  filter(upos %in% c(&quot;NOUN&quot;, &quot;VERB&quot;, &quot;ADV&quot;, &quot;ADJ&quot;, &quot;PROPN&quot;),
+         lemma %nin% stop$word)
+
+lemma_freq &lt;- dt %&gt;% 
+  group_by(lemma, upos) %&gt;% 
+  summarise(frequency = n(),
+            .groups = &quot;drop&quot;) %&gt;% 
+  arrange(desc(frequency)) %&gt;% 
+  filter(frequency &gt; 1)
+  
+lemma_freq %&gt;% 
+  head(., 15) %&gt;% 
+  ggplot(aes(x = reorder(lemma, -frequency), y = frequency)) + 
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;blue&quot;) + 
+  theme(axis.title.x = element_blank())</code></pre>
+<p><img src="how_to_train_TM_in_r_files/figure-html/unnamed-chunk-6-1.png" width="864" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>dt_lda &lt;- dt %&gt;% filter(lemma %in% lemma_freq$lemma,
+                        lemma != &quot;Chapter&quot;)
+dtf &lt;- document_term_frequencies(dt_lda, document = &quot;doc_id&quot;, term = &quot;lemma&quot;)
+dtm &lt;- document_term_matrix(x = dtf)</code></pre>
+</div>
+<div id="assessing-the-number-of-topics" class="section level2">
+<h2>Assessing the number of topics</h2>
+<p>The first thing we need to do is assess the ideal number of topics to enter as input for training the LDA model. The most common way to evaluate a probabilistic model is to measure the log-likelihood of a held-out test set. We can use many different methods to assess the number of topics. These are a few of them:</p>
+<ul>
+<li><p>Perplexity: it is a measurement of how well a probability distribution or probability model predicts a sample</p></li>
+<li><p>Arun2010: The measure is computed in terms of symmetric KL-Divergence of salient distributions that are derived from these matrix factor and is observed that the divergence values are higher for non-optimal number of topics (maximize)</p></li>
+<li><p>CaoJuan2009: method of adaptively selecting the best LDA model based on density.(minimize)</p></li>
+<li><p>Griffiths2004 evaluates the consequences of changing the number of topics T, used the Gibbs sampling algorithm to obtain samples from the posterior distribution over z at several choices of T(minimize)</p></li>
+</ul>
+<p>These various approaches enables use to assess minimums and maximums where the number of topics is ideal as such:</p>
+<ul>
+<li><p>Measure minimization: Arun2010, CaoJuan2009</p></li>
+<li><p>maximization: Deveaud2014, Griffiths2004</p></li>
+</ul>
+<p>Keep in mind that this exercise is the most computationally expensive part of your code because you need to train a lot of models in order to assess the ideal number of topic K on the entirity of the corpus. Even if you hook R to the most powerful EC2 AWS instance optimized for computation, you also may need to parallelize your code for efficiency. In the example below, we have used 50 CPU core to process models simultaneously.</p>
+<pre class="r"><code>if (Sys.getenv(&quot;RSTUDIO&quot;) == &quot;1&quot; &amp;&amp; !nzchar(Sys.getenv(&quot;RSTUDIO_TERM&quot;)) &amp;&amp; 
+    Sys.info()[&quot;sysname&quot;] == &quot;Darwin&quot; &amp;&amp; getRversion() == &quot;4.0.1&quot;) {
+  parallel:::setDefaultClusterOptions(setup_strategy = &quot;sequential&quot;)
+}
+result &lt;- FindTopicsNumber(
+  dtm,
+  topics = c(2, 3, 4, 5, 6, 7, 8, 10, 25),
+  metrics = c(&quot;Griffiths2004&quot;, &quot;CaoJuan2009&quot;,  &quot;Deveaud2014&quot;, &quot;Arun2010&quot;),
+  method = &quot;Gibbs&quot;,
+  control = list(seed = 77),
+  mc.cores = 50L,
+  verbose = TRUE
+)</code></pre>
+<pre><code>## fit models... done.
+## calculate metrics:
+##   Griffiths2004... done.
+##   CaoJuan2009... done.
+##   Deveaud2014... done.
+##   Arun2010... done.</code></pre>
+<pre class="r"><code># Plot result
+FindTopicsNumber_plot(result)</code></pre>
+<p><img src="how_to_train_TM_in_r_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The ideals numbers of topics for our 3 Jane Austen’s novels are between 5 and 8 topics as shown in the FindTopicsNumber plot above. We chose to go further with 6 topics.</p>
+</div>
+<div id="training-our-lda-model" class="section level2">
+<h2>Training our LDA Model</h2>
+<p>After assessing the ideal number of topics, you are now ready to train your LDA model.</p>
+<p>We choose to train our model with:</p>
+<ul>
+<li><p>an asymetric alpha parameter around the value of 50 / K, K chosen to 6 in earlier steps</p></li>
+<li><p>estimate.beta = TRUE (default) controls if beta, the word distribution of the topics, is fixed</p></li>
+<li><p>without verbose iteractions</p></li>
+<li><p>without saving/keeping the estimated models from previous iteractions</p></li>
+<li><p>seed = 848 (just like this number!)</p></li>
+<li><p>with only one random start</p></li>
+<li><p>best = TRUE returns only the model with the maximum likelihood (default)</p></li>
+<li><p>delta of 0.1 (recommended and default)</p></li>
+<li><p>with 10 000 Gibbs iterations (with 20 omitted in-between Gibbs iterations) where we do not keep the first 10 Gibbs iterations</p></li>
+</ul>
+<pre class="r"><code># Train a LDA Topic Model
+control_LDA_Gibbs &lt;- list(alpha = c(3, 50/6, 10), 
+                          estimate.beta = TRUE,
+                          verbose = 0, 
+                          prefix = tempfile(), 
+                          save = 0, 
+                          keep = 0,
+                          seed = as.integer(848), 
+                          nstart = 1, 
+                          best = TRUE,
+                          delta = 0.1,
+                          iter = 10000, 
+                          burnin = 10, 
+                          thin = 20)
+
+
+set.seed(884422)
+LDAmodel &lt;- LDA(dtm, k = 6, method = &quot;Gibbs&quot;, control = control_LDA_Gibbs)</code></pre>
+<p>Now that the LDA model is built, let’s look at the outputs from the model. The first output we are going to take a closer look into are the proportion of words per topics (called the betas here) and visualized with the most important word per topics and with a word cloud for the first and last topic.</p>
+<pre class="r"><code>topics_austen &lt;- tidy(LDAmodel, matrix = &quot;beta&quot;)</code></pre>
+<pre><code>## Warning: `tbl_df()` is deprecated as of dplyr 1.0.0.
+## Please use `tibble::as_tibble()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code>top_terms &lt;- topics_austen %&gt;%
+  filter(term != &quot;N&quot;, beta &gt; 0.0009) %&gt;% 
+  group_by(topic) %&gt;%
+  top_n(10, beta) %&gt;%
+  ungroup() %&gt;%
+  arrange(desc(beta), topic)
+
+top_terms %&gt;%
+  mutate(term = reorder(term, beta)) %&gt;%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = &quot;free&quot;) +
+  coord_flip()</code></pre>
+<p><img src="how_to_train_TM_in_r_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Let’s visualise the last of the topic: topic 6. After closer examination (and without being a Jane Austen expert) we chose to call this topic &quot;Main characters from Pride and Prejudice. This topic also apprear to include places. Many Jane Austen scholar agree that Jane Austen treated places and locations as characters in her novels.</p>
+<pre class="r"><code>df &lt;- topics_austen %&gt;% filter(topic == 6) %&gt;%  mutate(freq = beta * 10000)
+set.seed(1234)
+wordcloud(words = df$term, freq = df$freq, 
+          max.words=75, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, &quot;Dark2&quot;))</code></pre>
+<p><img src="how_to_train_TM_in_r_files/figure-html/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The first topic could be called daily activities and seem to be composed of what Jane Austen chracters would do during a day when active as oppose to topic 3 which could maybe be a topic for what her heroes do when waiting at home.</p>
+<pre class="r"><code>df &lt;- topics_austen %&gt;% filter(topic == 1) %&gt;%  mutate(freq = beta * 10000)
+set.seed(1234)
+wordcloud(words = df$term, freq = df$freq, 
+          max.words=75, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, &quot;Dark2&quot;))</code></pre>
+<pre><code>## Warning in wordcloud(words = df$term, freq = df$freq, max.words = 75,
+## random.order = FALSE, : knowledge could not be fit on page. It will not be
+## plotted.</code></pre>
+<p><img src="how_to_train_TM_in_r_files/figure-html/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>After a further examination of all the topics, we choose to call them:</p>
+<ul>
+<li><p>Topic 1 = Daily Activities in Jane Austen’s time</p></li>
+<li><p>Topic 2 = Love life of Jane Austen’s heroines</p></li>
+<li><p>Topic 3 = Waiting time at home</p></li>
+<li><p>Topic 4 = Main Characters from Sense and Sensibility</p></li>
+<li><p>Topic 5 = Main Characters from Persuasion</p></li>
+<li><p>Topic 6 = Main Characters from Pride and Prejudice</p></li>
+</ul>
+<p>Again, I am not a Jane Austen scholar but at first glance, the topics seem to make sense. She wrote about what she knew: relationships and daily acticities with her main characters.</p>
+<p>Now let’s look at the proportion of topics per documents.</p>
+<pre class="r"><code>document_austen &lt;- tidy(LDAmodel, matrix = &quot;gamma&quot;)
+
+doc &lt;- document_austen %&gt;%
+  filter(gamma &gt; 0.0006) %&gt;% 
+  group_by(document, topic) %&gt;%
+  arrange(desc(gamma)) %&gt;% 
+  mutate(topic_label = paste(&quot;Topic&quot;, topic), 
+         title = ifelse(document == &quot;doc1&quot;, &quot;Persuasion&quot;,
+                        ifelse(document == &quot;doc2&quot;, &quot;Pride&amp;Prejudice&quot;,
+                                &quot;Sense&amp;Sensibility&quot;)), 
+         gamma = gamma * 100)
+
+doc %&gt;%
+  ggplot(aes(title, gamma, fill = factor(topic_label))) +
+  geom_col(show.legend = TRUE)+
+  theme(axis.title.x=element_blank()) +
+  theme(legend.title=element_blank()) +
+  ylab(&quot;Topic Proportion&quot;)+
+  labs(title = &quot;Proportion of topic per document&quot;) </code></pre>
+<p><img src="how_to_train_TM_in_r_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>The graph above shows the six topics that compose the 3 analysed novels: the topics 1 (Daily activities), 2 (Love) and 3(Waiting) are common in all 3 documents while topic 6 (Characters from P. &amp; P.), 4 (Characters from S. &amp; S.) and 5 (Characters from Persuasion) are document specific.</p>
+</div>
+<div id="conclusions-and-next-chapter" class="section level2">
+<h2>Conclusions and next chapter</h2>
+<p>We have now built a LDA model for 3 Janes Austen novels. However, data expert usually works and analyses corpus made of hundreds of thousands of documents. The method presented above is then just too computationally expensive to be run locally in R and we need more brute force power.</p>
+<p>In the next chapter we will cover how to scale R with AWS for topic models. The code presented above can then be run on a powerful EC2 instance in AWS. We recommand using a c5.18xlarge type of instances for the largest corpus. This kind of instances is not cheap however (about 3.5 dollars per hour) so make sure that you turn off the instance once you are done with your tasks. c5.18xlarge instances have 72 vCPUs and 281 ECUs, 144 GiB of Memory and are optimized for computation.</p>
+</div>
+<div id="learning-ressources" class="section level2">
+<h2>Learning Ressources</h2>
+<ul>
+<li><p>udpipe wedsite: <a href="http://ufal.mff.cuni.cz/udpipe" class="uri">http://ufal.mff.cuni.cz/udpipe</a></p></li>
+<li><p>udpipe on github: <a href="https://github.com/ufal/udpipe" class="uri">https://github.com/ufal/udpipe</a></p></li>
+<li><p>vignett for udpipe: <a href="https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-topicmodelling.html" class="uri">https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-topicmodelling.html</a></p></li>
+<li><p>R-Bloggers on udpipe: <a href="https://www.r-bloggers.com/is-udpipe-your-new-nlp-processor-for-tokenization-parts-of-speech-tagging-lemmatization-and-dependency-parsing/" class="uri">https://www.r-bloggers.com/is-udpipe-your-new-nlp-processor-for-tokenization-parts-of-speech-tagging-lemmatization-and-dependency-parsing/</a></p></li>
+<li><p>Chang J (2010). lda: Collapsed Gibbs Sampling Methods for Topic Models. R package version 1.2.3, URL <a href="http://CRAN.R-project.org/package=lda" class="uri">http://CRAN.R-project.org/package=lda</a>.</p></li>
+<li><p>tf-idf page on wikipedia: <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf" class="uri">https://en.wikipedia.org/wiki/Tf%E2%80%93idf</a></p></li>
+<li><p>code to parallelize and find the ideal number of topics for your LDA: <a href="http://freerangestats.info/blog/2017/01/05/topic-model-cv" class="uri">http://freerangestats.info/blog/2017/01/05/topic-model-cv</a></p></li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Bettina Grün, Kurt Hornik (2011). “topicmodels: An R Package for Fitting Topic Models”. Journal of Statistical software 40(13), 1-30. URL <a href="https://www.jstatsoft.org/article/view/v040i13" class="uri">https://www.jstatsoft.org/article/view/v040i13</a></p></li>
+<li><p>Blei DM, Lafferty JD (2009). “Topic Models.” In A Srivastava, M Sahami (eds.), Text Mining: Classification, Clustering, and Applications. Chapman &amp; Hall/CRC Press. URL <a href="http://www.cs.columbia.edu/~blei/papers/BleiLafferty2009.pdf" class="uri">http://www.cs.columbia.edu/~blei/papers/BleiLafferty2009.pdf</a></p></li>
+<li><p>Griffiths TL, Steyvers M (2004). “Finding Scientific Topics.” Proceedings of the National Academy of Sciences of the United States of America, 101, 5228–5235. URL <a href="http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf" class="uri">http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf</a></p></li>
+<li><p>Rajkumar Arun, V. Suresh, C. E. Veni Madhavan, and M. N. Narasimha Murthy. 2010. On finding the natural number of topics with latent dirichlet allocation: Some observations. In Advances in knowledge discovery and data mining, Mohammed J. Zaki, Jeffrey Xu Yu, Balaraman Ravindran and Vikram Pudi (eds.). Springer Berlin Heidelberg, 391–402. <a href="http://doi.org/10.1007/978-3-642-13657-3_43" class="uri">http://doi.org/10.1007/978-3-642-13657-3_43</a></p></li>
+<li><p>Cao Juan, Xia Tian, Li Jintao, Zhang Yongdong, and Tang Sheng. 2009. A density-based method for adaptive lDA model selection. Neurocomputing — 16th European Symposium on Artificial Neural Networks 2008 72, 7–9: 1775–1781. <a href="http://doi.org/10.1016/j.neucom.2008.06.011" class="uri">http://doi.org/10.1016/j.neucom.2008.06.011</a></p></li>
+<li><p>Romain Deveaud, Éric SanJuan, and Patrice Bellot. 2014. Accurate and effective latent concept modeling for ad hoc information retrieval. Document numérique 17, 1: 61–84. <a href="http://doi.org/10.3166/dn.17.1.61-84" class="uri">http://doi.org/10.3166/dn.17.1.61-84</a></p></li>
+</ul>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
