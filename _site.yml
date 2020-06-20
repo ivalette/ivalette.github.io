@@ -2,6 +2,8 @@ name: "Isabelle Valette"
 navbar:
   title: "Isabelle Valette"
   left:
+    - text: "Topic Models"
+      href: what_is_topic_modeling.html  
     - text: "rstudio::conf"
       href: rstudioconf20.html  
       
