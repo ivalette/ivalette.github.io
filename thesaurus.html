@@ -319,7 +319,94 @@ $(document).ready(function () {
 <p><br clear="all" /></p>
 <p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
 <p><br clear="all" /> <br clear="all" /></p>
-<p>I am currently working on a thesaurus blog. Check this page for updates.</p>
+<div id="how-to-create-thesaurus-with-r-using-the-wordnet-package" class="section level1">
+<h1>How to create thesaurus with R using the wordnet package</h1>
+<p>But first, let’s download the Jane Austen novel, Pride and Prejudice from the gutenbergr package.</p>
+<pre class="r"><code>pp &lt;- gutenberg_download(1342) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)</code></pre>
+<div id="data-engineering-for-text-annotation" class="section level2">
+<h2>Data Engineering for Text annotation</h2>
+<p>Text annotation is a key step of the data engineering process. We used the R package <a href="https://github.com/bnosac/udpipe">udpipe</a> for doing annotations. This package is available on <a href="https://CRAN.R-project.org/package=udpipe">CRAN</a>. According to <a href="https://www.r-bloggers.com/is-udpipe-your-new-nlp-processor-for-tokenization-parts-of-speech-tagging-lemmatization-and-dependency-parsing/">R-bloggers</a>, there aren’t many available tools which do all the text annotations:</p>
+<ul>
+<li><p>for multiple languages and</p></li>
+<li><p>do not depend on external software dependencies (java/python)</p></li>
+<li><p>which also allow you to train your own parsing &amp; tagging models.</p></li>
+</ul>
+<p>…Except R package udpipe which satisfies these 3 criteria.</p>
+<p>Udpipe enables tokenisation, speech tagging, lemmatization and dependency parsing. Dependency Parsing is the process of finding relationships between words- e.g “head” words and words which modify those heads. This allows you to look for words which may be far away from each other in the raw text but influence each other. Dependency parsing will not be used to build our LDA model as opposed to tokenisation, speech tagging and lemmatization.</p>
+<p>So, what are these concepts?</p>
+<ul>
+<li><p>Tokenization is the first step in cleaning data: it removes punctuation, spacing, handling of special characters and extract words from sentences. udpipe is also handy in the sense that it keeps track for you of document ids, paragraph and sentence id, token id, and so on, supposing that you have correct spacing/punctuation between, paragraph, sentences, etc.</p></li>
+<li><p>Lemmatization is an advanced form of stemming. The way it works is that it groups together the inflected forms of a word (walks, walked, walking) into its lemma (walk) so they can be analysed as a single item. An advantage of using udpipe is that it does for you the mapping between token and lemma.</p></li>
+<li><p>According to <a href="https://en.wikipedia.org/wiki/Part-of-speech_tagging">wikipedia</a>, part-of-speech tagging, also called POS tagging is the process of marking up a corpus as corresponding to a particular part of the speech based on both its definition and its context—i.e., its relationship with adjacent and related words in a phrase, sentence, or paragraph. A simplified form of this is commonly taught to school-age children, in the identification of words as nouns, verbs, adjectives, adverbs, etc. To train our LDA model, we used only Nouns, Verbs, Adjectives, Adverbs and Prop Nouns.</p></li>
+</ul>
+<p>Below is the code for text annotation in R with udpipe. This part of the code can be quite computationally expensive if you have a massive corpus of several hundred thousands documents. Hence the need to hook R up to AWS that we will see in the next chapter.</p>
+<p>More information about the quality of the udpipe model for text annotation for your language can be found <a href="https://github.com/jwijffels/udpipe.models.ud.2.0/blob/master/inst/udpipe-ud-2.0-170801/README">here</a>. As seen in the document, the models produce correct lemma and upos in more than 96% of the sentences. This is good enough for our purpose. I have tested both the Norwegian and English models.</p>
+<pre class="r"><code># Downloading and loading the udpipe English model for lemmatization
+model &lt;- udpipe_download_model(language = &quot;english&quot;)
+model &lt;- udpipe_load_model(model$file_model)
+
+# Lemmatization and text annotation
+annotated &lt;- udpipe_annotate(model, x = pp)
+annotated &lt;- as.data.frame(annotated)</code></pre>
+<p>Finally, we need to concatinate 2 consecutive PROPN so that the lemma “Jane” and “Austen” that follow each other in the same sentence, in the same paragraph, become the new lemma “Jane Austen”. Here is the code to do that.</p>
+<pre class="r"><code>annotated_concat &lt;- annotated %&gt;%
+  mutate(token_id = as.numeric(token_id),
+         temp = ifelse(upos == &quot;PROPN&quot;, NA, token_id)) %&gt;% 
+  tidyr::fill(temp) %&gt;% 
+  mutate(sk_id = ifelse(upos == &quot;PROPN&quot;, temp + 1, token_id)) %&gt;% 
+  group_by(doc_id, paragraph_id, sentence_id, sentence, sk_id) %&gt;% 
+  summarise(lemma = paste0(lemma, collapse = &quot; &quot;),
+            upos = first(upos), 
+            .groups = &quot;drop&quot;) %&gt;% 
+  ungroup()</code></pre>
+</div>
+<div id="the-document-term-matrix" class="section level2">
+<h2>The Document Term Matrix</h2>
+<p>First, a little word on the document-term matrix - what is it? It is the input data to train the LDA model. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei &amp; Lafferty 2009 (<a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf-idf</a>)</p>
+<p>During the final stages of the data preprosessing to create the document term matrix, we do the following:</p>
+<ul>
+<li><p>remove stop words</p></li>
+<li><p>only select the upos Noun, Verb, Adjective, Adverb and Prop Nouns</p></li>
+<li><p>remove words that appear only once in the entire Austen corpus</p></li>
+<li><p>visialise the most frequent words</p></li>
+<li><p>remove the word “Chapter”</p></li>
+<li><p>create the <a href="https://en.wikipedia.org/wiki/Document-term_matrix">document term matrix</a></p></li>
+</ul>
+<p>This is done in R as shown below. And let’s have a look at the word that are the most frequent in the Jane Austen’s novels we have chosen to look at.</p>
+<pre class="r"><code>stop &lt;- tidytext::stop_words
+
+dt &lt;- annotated_concat %&gt;% 
+  filter(upos %in% c(&quot;NOUN&quot;, &quot;VERB&quot;, &quot;ADV&quot;, &quot;ADJ&quot;, &quot;PROPN&quot;),
+         lemma %nin% stop$word)
+
+lemma_freq &lt;- dt %&gt;% 
+  group_by(lemma, upos) %&gt;% 
+  summarise(frequency = n(),
+            .groups = &quot;drop&quot;) %&gt;% 
+  arrange(desc(frequency)) %&gt;% 
+  filter(frequency &gt; 1, lemma != &quot;Chapter&quot;)
+  
+lemma_freq %&gt;% 
+  head(., 15) %&gt;% 
+  ggplot(aes(x = reorder(lemma, -frequency), y = frequency)) + 
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;blue&quot;) + 
+  theme(axis.title.x = element_blank())</code></pre>
+<p><img src="thesaurus_files/figure-html/unnamed-chunk-4-1.png" width="864" style="display: block; margin: auto;" /></p>
+</div>
+<div id="extracting-the-thesaurus" class="section level2">
+<h2>Extracting the thesaurus</h2>
+<p>Thanks to the wordnet package, thesaurus can be extracted as fellows:</p>
+<pre class="r"><code>synonyms(&quot;sister&quot;, &quot;NOUN&quot;)</code></pre>
+<pre><code>## [1] &quot;babe&quot;   &quot;baby&quot;   &quot;sis&quot;    &quot;sister&quot; &quot;Sister&quot;</code></pre>
+<pre class="r"><code>synonyms(&quot;time&quot;, &quot;NOUN&quot;)</code></pre>
+<pre><code>## [1] &quot;clip&quot;             &quot;clock time&quot;       &quot;fourth dimension&quot; &quot;meter&quot;           
+## [5] &quot;metre&quot;            &quot;prison term&quot;      &quot;sentence&quot;         &quot;time&quot;</code></pre>
+</div>
+<div id="resources" class="section level2">
+<h2>Resources</h2>
+<p>We used the cran documentation on the wordnet package to create this tutorial. The documentation is available <a href="https://cran.r-project.org/web/packages/wordnet/vignettes/wordnet.pdf">here.</a></p>
+</div>
+</div>
 
 
 
