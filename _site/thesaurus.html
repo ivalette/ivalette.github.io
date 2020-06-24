@@ -319,8 +319,8 @@ $(document).ready(function () {
 <p><br clear="all" /></p>
 <p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
 <p><br clear="all" /> <br clear="all" /></p>
-<div id="how-to-create-thesaurus-with-r-using-the-wordnet-package" class="section level1">
-<h1>How to create thesaurus with R using the wordnet package</h1>
+<div id="how-to-create-thesaurus-using-udpipe-and-the-wordnet-packages-with-r" class="section level1">
+<h1>How to create thesaurus using udpipe and the wordnet packages with R?</h1>
 <p>But first, let’s download the Jane Austen novel, Pride and Prejudice from the gutenbergr package.</p>
 <pre class="r"><code>pp &lt;- gutenberg_download(1342) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)</code></pre>
 <div id="data-engineering-for-text-annotation" class="section level2">
@@ -362,7 +362,7 @@ annotated &lt;- as.data.frame(annotated)</code></pre>
 </div>
 <div id="the-document-term-matrix" class="section level2">
 <h2>The Document Term Matrix</h2>
-<p>First, a little word on the document-term matrix - what is it? It is the input data to train the LDA model. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei &amp; Lafferty 2009 (<a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf-idf</a>)</p>
+<p>First, a little word on the document-term matrix - what is it? It is the input data to train the LDA model or find thesaurus. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei &amp; Lafferty 2009 (<a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf-idf</a>)</p>
 <p>During the final stages of the data preprosessing to create the document term matrix, we do the following:</p>
 <ul>
 <li><p>remove stop words</p></li>
@@ -402,9 +402,25 @@ lemma_freq %&gt;%
 <pre><code>## [1] &quot;clip&quot;             &quot;clock time&quot;       &quot;fourth dimension&quot; &quot;meter&quot;           
 ## [5] &quot;metre&quot;            &quot;prison term&quot;      &quot;sentence&quot;         &quot;time&quot;</code></pre>
 </div>
-<div id="resources" class="section level2">
-<h2>Resources</h2>
+<div id="learning-ressources" class="section level2">
+<h2>Learning Ressources</h2>
 <p>We used the cran documentation on the wordnet package to create this tutorial. The documentation is available <a href="https://cran.r-project.org/web/packages/wordnet/vignettes/wordnet.pdf">here.</a></p>
+<ul>
+<li><p>udpipe wedsite: <a href="http://ufal.mff.cuni.cz/udpipe" class="uri">http://ufal.mff.cuni.cz/udpipe</a></p></li>
+<li><p>udpipe on github: <a href="https://github.com/ufal/udpipe" class="uri">https://github.com/ufal/udpipe</a></p></li>
+<li><p>vignett for udpipe: <a href="https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-topicmodelling.html" class="uri">https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-topicmodelling.html</a></p></li>
+<li><p>R-Bloggers on udpipe: <a href="https://www.r-bloggers.com/is-udpipe-your-new-nlp-processor-for-tokenization-parts-of-speech-tagging-lemmatization-and-dependency-parsing/" class="uri">https://www.r-bloggers.com/is-udpipe-your-new-nlp-processor-for-tokenization-parts-of-speech-tagging-lemmatization-and-dependency-parsing/</a></p></li>
+<li><p>tf-idf page on wikipedia: <a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf" class="uri">https://en.wikipedia.org/wiki/Tf%E2%80%93idf</a></p></li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Bettina Grün, Kurt Hornik (2011). “topicmodels: An R Package for Fitting Topic Models”. Journal of Statistical software 40(13), 1-30. URL <a href="https://www.jstatsoft.org/article/view/v040i13" class="uri">https://www.jstatsoft.org/article/view/v040i13</a></p></li>
+<li><p>Blei DM, Lafferty JD (2009). “Topic Models.” In A Srivastava, M Sahami (eds.), Text Mining: Classification, Clustering, and Applications. Chapman &amp; Hall/CRC Press. URL <a href="http://www.cs.columbia.edu/~blei/papers/BleiLafferty2009.pdf" class="uri">http://www.cs.columbia.edu/~blei/papers/BleiLafferty2009.pdf</a></p></li>
+<li><p>Griffiths TL, Steyvers M (2004). “Finding Scientific Topics.” Proceedings of the National Academy of Sciences of the United States of America, 101, 5228–5235. URL <a href="http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf" class="uri">http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf</a></p></li>
+<li><p>Rajkumar Arun, V. Suresh, C. E. Veni Madhavan, and M. N. Narasimha Murthy. 2010. On finding the natural number of topics with latent dirichlet allocation: Some observations. In Advances in knowledge discovery and data mining, Mohammed J. Zaki, Jeffrey Xu Yu, Balaraman Ravindran and Vikram Pudi (eds.). Springer Berlin Heidelberg, 391–402. <a href="http://doi.org/10.1007/978-3-642-13657-3_43" class="uri">http://doi.org/10.1007/978-3-642-13657-3_43</a></p></li>
+</ul>
 </div>
 </div>
 

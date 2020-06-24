@@ -19,7 +19,7 @@ Sys.setenv(WNHOME = "/usr/local/Cellar/wordnet/3.1")
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-# How to create thesaurus with R using the wordnet package
+# How to create thesaurus using udpipe and the wordnet packages with R?
 
 But first, let's download the Jane Austen novel, Pride and Prejudice from the gutenbergr package.
 
@@ -82,7 +82,7 @@ annotated_concat <- annotated %>%
 ## The Document Term Matrix
 
 First, a little word on the document-term matrix - what is it? 
-It is the input data to train the LDA model. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei & Lafferty 2009 ([tf-idf](https://en.wikipedia.org/wiki/Tf%E2%80%93idf)) 
+It is the input data to train the LDA model or find thesaurus. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei & Lafferty 2009 ([tf-idf](https://en.wikipedia.org/wiki/Tf%E2%80%93idf)) 
 
 During the final stages of the data preprosessing to create the document term matrix, we do the following:
 
@@ -131,6 +131,26 @@ synonyms("sister", "NOUN")
 synonyms("time", "NOUN")
 ```
 
-## Resources
+## Learning Ressources
 
 We used the cran documentation on the wordnet package to create this tutorial. The documentation is available [here.](https://cran.r-project.org/web/packages/wordnet/vignettes/wordnet.pdf)
+
+- udpipe wedsite: http://ufal.mff.cuni.cz/udpipe
+
+- udpipe on github: https://github.com/ufal/udpipe
+
+- vignett for udpipe: https://cran.r-project.org/web/packages/udpipe/vignettes/udpipe-usecase-topicmodelling.html
+
+- R-Bloggers on udpipe: https://www.r-bloggers.com/is-udpipe-your-new-nlp-processor-for-tokenization-parts-of-speech-tagging-lemmatization-and-dependency-parsing/
+
+- tf-idf page on wikipedia: https://en.wikipedia.org/wiki/Tf%E2%80%93idf
+
+## References
+
+- Bettina Grün, Kurt Hornik (2011). "topicmodels: An R Package for Fitting Topic Models". Journal of Statistical software 40(13), 1-30. URL https://www.jstatsoft.org/article/view/v040i13
+
+- Blei DM, Lafferty JD (2009). “Topic Models.” In A Srivastava, M Sahami (eds.), Text Mining: Classification, Clustering, and Applications. Chapman & Hall/CRC Press. URL http://www.cs.columbia.edu/~blei/papers/BleiLafferty2009.pdf
+
+- Griffiths TL, Steyvers M (2004). “Finding Scientific Topics.” Proceedings of the National Academy of Sciences of the United States of America, 101, 5228–5235. URL http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf
+
+- Rajkumar Arun, V. Suresh, C. E. Veni Madhavan, and M. N. Narasimha Murthy. 2010. On finding the natural number of topics with latent dirichlet allocation: Some observations. In Advances in knowledge discovery and data mining, Mohammed J. Zaki, Jeffrey Xu Yu, Balaraman Ravindran and Vikram Pudi (eds.). Springer Berlin Heidelberg, 391–402. http://doi.org/10.1007/978-3-642-13657-3_43
