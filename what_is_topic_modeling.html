@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>what_is_topic_modeling.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Isabelle Valette</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="what_is_topic_modeling.html">Topic Models</a>
+</li>
+<li>
+  <a href="rstudioconf20.html">rstudio::conf</a>
+</li>
+<li>
+  <a href="thesaurus.html">Thesaurus in R</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="http://github.com/ivalette">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/valette_isa">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/isabellevalette/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><br clear="all" /></p>
+<p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
+<p><br clear="all" /> <br clear="all" /></p>
+<div id="what-are-topic-models" class="section level1">
+<h1>What are topic models?</h1>
+<div id="topic-models-blog-serie" class="section level2">
+<h2>Topic Models Blog Serie</h2>
+<p>This is the first blog of a six part serie on “Learning, training and scaling topic models: a practical approach in R”. The serie covers:</p>
+<ol style="list-style-type: decimal">
+<li><p>What are topic models (TM)?</p></li>
+<li><p>A <a href="what_is_LDA.html">little introduction to LDA</a></p></li>
+<li><p>A gentle look into the <a href="bayesian_statistics.html">Bayesian statistics</a> behind TM</p></li>
+<li><p>How to <a href="how_to_train_TM_in_r.html">train TM and visualise outputs</a> in R?</p></li>
+<li><p>Setting up <a href="how_to_run_R_on_aws.html">AWS with R for scaling</a> TM</p></li>
+<li><p>How does the TM algorithm work under the hood? (To come)</p></li>
+</ol>
+<p>We will use 3 of Jane Austen’s books to illustrate our examples: Sense and Sensibility, Pride and Prejudice and Persuasion. We will download and process the Austen corpus with the help of the gutenbergr package.</p>
+</div>
+<div id="what-do-topic-models-uncover" class="section level2">
+<h2>What Do Topic Models Uncover?</h2>
+<p>Topic models (TM) have proved themselves to be powerful unsupervised tools to uncover textual structure in what otherwise appear to be just plain unstructured text. The idea is that documents consist of different subjects or topics and each topic is made of a collection of words that characterizes it.</p>
+<p>Concretly, topic models helps us to programatically uncover two hidden structures in the analysed text:</p>
+<ul>
+<li><p>the <strong>proportion of each topic</strong> a document is made of</p></li>
+<li><p>the <strong>proportion of each word</strong> a topic is made of</p></li>
+</ul>
+<p>The <strong>topic proportion per document</strong> is based on a finite number of topics that we expect to find in the analysed corpus and is fixed apriori. We will later show how to select an ideal number of topics while training a topic model.</p>
+<p><img src="what_is_topic_modeling_files/figure-html/unnamed-chunk-1-1.png" width="1152" /></p>
+<p>The example above shows the six topics that compose the 3 analysed documents: the topics 3, 4 and 6 are common in all 3 documents while topic 1, 2 and 5 are document specific. Moreover, we can see that 36% of document 1 is made of topic 3, 28% of topic 5, 18% of both topics 6 and 4. The sum of all the topic proportions for all documents equals to 100% or 1. The higher the proportion of topic for a document, the more important this topic is to characterize the document.</p>
+<p>The <strong>word proportion per topic</strong> is computed from all the words in the vocabulary of the corpus we train the topic models on. However, words that belong to the same topic have a higher probability to appear together.</p>
+<center>
+<img src="images/topic1.png" />
+</center>
+<p>The example above shows the words associated with the topic “Main characters / locations from Austen’s Pride &amp; Prejudice”. The larger the word in the cloud, the more frequent and important the word is for this topic. The word proportion per topic will be high if the word occur often in the topic and is therefore important to characterize the topic. The sum of all the word proportion per topic will sums up to 1 or 100%.</p>
+</div>
+<div id="the-input-and-output-of-the-topic-model" class="section level2">
+<h2>The Input and Output of the Topic Model</h2>
+<p>To summarise, the input of a topic model are plain text from documents as such:</p>
+<pre class="r"><code>#Download Persuasion
+p &lt;- gutenberg_download(105) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)
+#Download Pride &amp; Prejudice
+pp &lt;- gutenberg_download(1342) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)
+#Download Sense &amp; Sensibility
+ss &lt;- gutenberg_download(161) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)</code></pre>
+<pre class="r"><code>austen &lt;- data.frame(id = c(1, 2, 3), 
+                     text = c(p, pp, ss), 
+                     stringsAsFactors = F)
+
+austen %&gt;% filter(id == 2) %&gt;% .$text %&gt;% substr(., 50, 428)</code></pre>
+<pre><code>## [1] &quot;  It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.  However little known the feelings or views of such a man may be on his first entering a neighbourhood, this truth is so well fixed in the minds of the surrounding families, that he is considered the rightful property of some one or other of their daughters. &quot;</code></pre>
+<p>The outputs of the topic model are:</p>
+<ul>
+<li><p>The word clouds showing the words with the highest word proportion per topics. Often, the wordcloud is a good tool to estimate the name of a topic. However, it is a great help to have access to some of the authors of the corpus you are analysing. Their help is valuable when choosing the name of the topics the TM have identified and make sure that the rest of your organisation understands what you are refering to when presenting results from those topics.</p></li>
+<li><p>The topic vector showing the fingerprint or structure of each document (aka topic proportion per document) as such:</p></li>
+</ul>
+<pre class="r"><code>doc1 &lt;- data.frame(document = rep(&quot;document1&quot;, 6),
+                   topic = c(&quot;topic3&quot;, &quot;topic5&quot;, &quot;topic6&quot;, &quot;topic4&quot;, &quot;topic1&quot;, &quot;topic2&quot;),
+                   topic_prop = c(36.20261, 28.29619, 17.87712, 17.52641, 0, 0), 
+                   stringsAsFactors = F) 
+
+doc1 %&gt;% 
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) + 
+  geom_point(color = &quot;blue&quot;) + 
+  geom_linerange(color = &quot;blue&quot;) + 
+  facet_wrap(~ document) + 
+  scale_y_continuous(lim = c(0,100)) +
+  theme(panel.border = element_rect(fill = 0, colour = &quot;black&quot;)) +
+  ylab(&quot;Topic Proportion in %&quot;)</code></pre>
+<p><img src="what_is_topic_modeling_files/figure-html/unnamed-chunk-4-1.png" width="1152" /></p>
+<p>The fingerprint is a visual DNA of the topics the document is made of. The graph above shows the proportion of the document 1 from the example above.</p>
+</div>
+<div id="conclusion-and-next-chapter" class="section level2">
+<h2>Conclusion and Next Chapter</h2>
+<p>Topic models are powerful tools for content analysis, article search and personalization of content. The output of the models, namely the topic vectors, are often powerful predictors to other machine learning algorithms for analysing demographics, behaviour or customers actions. And there are many more applications for TM. However, once trained a model will perform poorly on document specific topics that the model have not been exposed to while trained.</p>
+<p>There are a few other limitations. Training good topics models requires deciding a priori the number of topics one expects to find. Also, the parametrisation of the TM requires in depth knowledge of the content of the documents we are analysing. In the next chapter we will take a closer look into the LDA algorithm, one of the most popular algorithm for topic models. We will then look at how we can use the Dirichlet parameter to similate the complexity of the documents we are analysing.</p>
+</div>
+<div id="learning-ressources" class="section level2">
+<h2>Learning Ressources</h2>
+<ul>
+<li><p>Professor Blei KDD Tutorial: <a href="http://www.ccs.neu.edu/home/jwvdm/teaching/cs6220/fall2016/assets/pdf/blei-kdd-tutorial.pdf" class="uri">http://www.ccs.neu.edu/home/jwvdm/teaching/cs6220/fall2016/assets/pdf/blei-kdd-tutorial.pdf</a></p></li>
+<li><p>Professor Blei lectures on Topic models at Machine Learning Summer School (MLSS), Cambridge 2009 part 1 &amp; 2 with slides: <a href="http://videolectures.net/mlss09uk_blei_tm/" class="uri">http://videolectures.net/mlss09uk_blei_tm/</a></p></li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Blei DM, Ng AY, Jordan MI (2003b). “Latent Dirichlet Allocation.” Journal of Machine Learning Research, 3, 993–1022, page 1009. URL <a href="http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf" class="uri">http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf</a></p></li>
+<li><p>Griffiths TL, Steyvers M (2004). “Finding Scientific Topics.” Proceedings of the National Academy of Sciences of the United States of America, 101, 5228–5235. URL <a href="http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf" class="uri">http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf</a></p></li>
+<li><p>Grün, B. &amp; Hornik, K. (2011). topicmodels: An R Package for Fitting Topic Models.. Journal of Statistical Software, 40(13), 1-30.</p></li>
+<li><p>Ponweiser M., “Latent Dirichlet Allocation in R”, Diploma Thesis, Institute for Statistics and Mathematics, 2012. URL <a href="http://epub.wu.ac.at/3558/1/main.pdf" class="uri">http://epub.wu.ac.at/3558/1/main.pdf</a></p></li>
+</ul>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

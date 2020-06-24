@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>what_is_LDA.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Isabelle Valette</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="what_is_topic_modeling.html">Topic Models</a>
+</li>
+<li>
+  <a href="rstudioconf20.html">rstudio::conf</a>
+</li>
+<li>
+  <a href="thesaurus.html">Thesaurus in R</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="http://github.com/ivalette">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/valette_isa">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/isabellevalette/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><br clear="all" /></p>
+<p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
+<p><br clear="all" /> <br clear="all" /></p>
+<div id="a-little-introduction-to-lda" class="section level1">
+<h1>A little introduction to LDA</h1>
+<div id="topic-models-blog-serie" class="section level2">
+<h2>Topic Models Blog Serie</h2>
+<p>This is the second blog of a six part serie on “Learning, training and scaling topic models: a practical approach in R”. The serie covers:</p>
+<ol style="list-style-type: decimal">
+<li><p>What <a href="what_is_topic_modeling.html">are topic models</a> (TM)?</p></li>
+<li><p>A little introduction to LDA</p></li>
+<li><p>A gentle look into the <a href="bayesian_statistics.html">Bayesian statistics</a> behind TM</p></li>
+<li><p>How to <a href="how_to_train_TM_in_r.html">train TM and visualise outputs</a> in R?</p></li>
+<li><p>Setting up <a href="how_to_run_R_on_aws.html">AWS with R for scaling</a> TM</p></li>
+<li><p>How does the TM algorithm work under the hood? (To come)</p></li>
+</ol>
+<p>We will use 3 of Jane Austen’s books to illustrate our examples: Sense and Sensibility, Pride and Prejudice and Persuasion. We will download and process the Austen corpus with the help of the gutenbergr package.</p>
+</div>
+<div id="lda---latent-dirichlet-allocation" class="section level2">
+<h2>LDA - Latent Dirichlet Allocation</h2>
+<p>The Latent Dirichlet Allocation (LDA) is one of the most popular algorithms used for topic modeling and the one we will look more closely into. First, what does the name “Latent Dirichlet Allocation” actually mean?</p>
+<div id="latent-variables" class="section level3">
+<h3>Latent variables</h3>
+<p>“Latent” refers to the missing variables or the hidden structures of the probabilistic process that we are going to estimate. These hidden structures as we saw in chapter 1 are:</p>
+<ul>
+<li><p>the word proportion per topic also called the topic distribution over words (Dirichlet distribution)</p></li>
+<li><p>the topic proportion per document (Dirichlet distribution)</p></li>
+<li><p>the topic assignments or topic allocation (Multinomial distribution)</p></li>
+</ul>
+</div>
+<div id="allocation" class="section level3">
+<h3>Allocation</h3>
+<p>“Allocation” refers to the way the algorithm works. In LDA, a word is associated with only 1 topic and this is called the topic assignment or topic allocation: The hidden topic assignment comes from a multinomial distribution Z with parameter theta (θ).</p>
+</div>
+<div id="dirichlet-distribution" class="section level3">
+<h3>Dirichlet Distribution</h3>
+<div id="introduction-to-the-dirichlet-distribution" class="section level4">
+<h4>Introduction to the Dirichlet Distribution</h4>
+<p>Let’s talk a little about the <a href="https://www.rdocumentation.org/packages/DirichletReg/versions/0.6-3/topics/Dirichlet">Dirichlet distribution</a> as it is an important concept to grasp in order to parametrize the LDA model in R. So, what is a <strong>Dirichlet Distribution</strong>? It is a probability distribution of a <strong>probability simplex</strong>. What is a probability simplex? It is a non-negative vector whose values sum up to 1 or 100%, like so:</p>
+<ul>
+<li><p>(0.6, 0.4)</p></li>
+<li><p>(0.2, 0.1, 0.7)</p></li>
+<li><p>(3%, 28%, 18%, 18%) Remember the description of document 1 in chapter 1</p></li>
+</ul>
+<p>The Dirichlet distribution is parametrised by <strong>alpha</strong> (α) which controls the mean, shape and sparsity of the distribution.</p>
+</div>
+<div id="dirichlet-similations-in-r" class="section level4">
+<h4>Dirichlet similations in R</h4>
+<p>Let’s look at an example: let’s say we have a collection of 3 documents where we know that we are dealing with 6 topics and α=0.1. We would like to visualize the topic proportion for these 3 documents.</p>
+<pre class="r"><code>set.seed(442288)
+alpha &lt;- 0.1
+documents &lt;- 3
+topics &lt;- 6
+x &lt;- t(rdirichlet(documents, rep(alpha, topics)))
+
+dt &lt;- data.frame(document = sort(rep(1:3, 6)),
+                 topic = rep(1:6, 3), 
+                 topic_prop = as.vector(x)) 
+dt %&gt;% 
+  kable() %&gt;%
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;))</code></pre>
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+document
+</th>
+<th style="text-align:right;">
+topic
+</th>
+<th style="text-align:right;">
+topic_prop
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0145334
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.1477870
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.0015835
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.7926614
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0.0434347
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0025058
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.2835263
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.6351100
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.0000010
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0.0788569
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0683457
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0.1749886
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+0.3462497
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0.4104160
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0.0000001
+</td>
+</tr>
+</tbody>
+</table>
+<p>As you can see from the similation, the sum of the topic proprotion per document equals to 1.</p>
+<pre class="r"><code>dt %&gt;%
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0, ymax = topic_prop)) +
+  geom_point(color = &quot;blue&quot;) +
+  geom_linerange(color = &quot;blue&quot;) +
+  facet_wrap(~ document) +
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, colour = &quot;black&quot;)) +
+  ylab(&quot;Topic Proportion&quot;) +
+  scale_x_continuous(&quot;Topic IDs&quot;, breaks = c(1:6))</code></pre>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-2-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>We can see from the graph above that the topic proportions for the 3 documents are:</p>
+<ul>
+<li><p>mostly concentrated around topic 5 and 2 for document 1</p></li>
+<li><p>mostly concentrated around topic 4, 3 and 6 for document 2</p></li>
+<li><p>mostly concentrated around topic 4, 3, 2, and 1 for document 3</p></li>
+</ul>
+</div>
+<div id="the-parameter-alpha" class="section level4">
+<h4>The parameter alpha</h4>
+<p>Let’s now look at another example in R to get the intuition behind the parametrisation of the Dirichlet parameter α. Let’s plot 4 Dirichlet distributions with different alpha parameters: α=0.01, α=0.1, α=1, α=100 for 3 documents and 6 topics. The graph below shows the results for the topic proportion per document. We see from the simulations below that the lower the alpha, the more concentrated the proportion of topic around a few dominant topics. The larger the alpha, the more the proportion of topics are scattered across many topics (flatter distribution) up to the point where for large alpha, the distribution is almost uniformally distributed equally on all topics.</p>
+<pre class="r"><code>plot_dirichlet &lt;- function(alpha){
+set.seed(442288)
+documents &lt;- 3
+topics &lt;- 6
+x &lt;- t(rdirichlet(documents, rep(alpha, topics)))
+
+dt &lt;- data.frame(document = sort(rep(1:3,6)),
+                 topic = rep(1:6,3), 
+                 topic_prop = as.vector(x)) 
+
+dt %&gt;% 
+  ggplot(aes(x = topic, y = topic_prop, ymin = 0,ymax = topic_prop)) + 
+  geom_point(color = &quot;blue&quot;) + 
+  geom_linerange(color = &quot;blue&quot;) + 
+  facet_wrap(~document) + 
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, color = &quot;black&quot;)) +
+  ylab(&quot;Topic Proportion&quot;) +
+  scale_x_continuous(&quot;Topic IDs&quot;, breaks = c(1:6))
+}
+
+#smallest alpha
+plot_dirichlet(0.01)</code></pre>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#small alpha
+plot_dirichlet(0.1)</code></pre>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-2.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># alpha of 1
+plot_dirichlet(1)</code></pre>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-3.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># large alpha
+plot_dirichlet(100)</code></pre>
+<p><img src="what_is_LDA_files/figure-html/unnamed-chunk-3-4.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="symmetric-versus-asymmetric-alpha-parameters" class="section level4">
+<h4>Symmetric versus Asymmetric Alpha Parameters</h4>
+<p>The dirichlet parameter α is a vector. This vector is called <strong>symetric</strong> when all the elements that make up the vector α have the same value. Similarly, the dirichlet parameter will be called <strong>asymmetrical</strong> when the vector have a different value. Literature shows that asymmetrical parameters tend to produce slightly better LDA models. Let’s get the intuition for why this happens?</p>
+<p>So first what happens when we draws with a vector alpha of 2 elements?</p>
+<pre class="r"><code>set.seed(224488)
+alpha &lt;- c(2, 0.1)
+documents &lt;- 3
+topics &lt;- 6
+x &lt;- t(rdirichlet(documents, rep(alpha, topics)))
+
+x %&gt;% 
+  kable() %&gt;%
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;))</code></pre>
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.2228273
+</td>
+<td style="text-align:right;">
+0.3343027
+</td>
+<td style="text-align:right;">
+0.2272768
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.0147355
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000023
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.0658137
+</td>
+<td style="text-align:right;">
+0.0639564
+</td>
+<td style="text-align:right;">
+0.0982747
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.0023006
+</td>
+<td style="text-align:right;">
+0.0002759
+</td>
+<td style="text-align:right;">
+0.0028980
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.2112539
+</td>
+<td style="text-align:right;">
+0.3471035
+</td>
+<td style="text-align:right;">
+0.1256389
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.0097800
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0158348
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.2551435
+</td>
+<td style="text-align:right;">
+0.1089549
+</td>
+<td style="text-align:right;">
+0.1264869
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.0000027
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.1125539
+</td>
+<td style="text-align:right;">
+0.0642451
+</td>
+<td style="text-align:right;">
+0.1893198
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.0003057
+</td>
+<td style="text-align:right;">
+0.0000422
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.1052833
+</td>
+<td style="text-align:right;">
+0.0810976
+</td>
+<td style="text-align:right;">
+0.1944495
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:right;">
+0.0000217
+</td>
+<td style="text-align:right;">
+0.0198182
+</td>
+</tr>
+</tbody>
+</table>
+<p>The table above shows that for each document, we get 12 proportions instead of just 6 for the 6 topics. Six of the proportions are drawn with an alpha of 2 and six with an alpha of 0.1. The sum per document (here we refer to the sum per column) is still equals to 1 or 100%.</p>
+<pre class="r"><code>dt &lt;- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
+                 topic=rep(1:6, 3 * length(alpha)),
+                 topic_prop=as.vector(x))
+
+dt %&gt;%
+  group_by(document, topic) %&gt;%
+  summarise(topic_prop = sum(topic_prop)) %&gt;%
+  ggplot(., aes(x = topic, y = topic_prop,
+                ymin = 0, ymax = topic_prop)) +
+  geom_point(colour = &quot;blue&quot;) +
+  geom_linerange(color = &quot;blue&quot;) +
+  facet_wrap(.~ document) +
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, color = &quot;black&quot;)) +
+  labs(y =&quot;Topic Proportion&quot;) +
+  scale_x_continuous(&quot;Topic Id&quot;, breaks = c(1:6))</code></pre>
+<p>As we can see from the 3 documents above, the Dirichlet distribution per topic has now 2 random sets of values per topic: one set generated from an α = 2 and another for α = 0.1. With each element of the α vector, we increase the complexity of the topic proportion distribution per document. This higher level of complexity introduced by asymetric dirichlet parameter tends to replicate the complexity of real world topic proportion per document found in a corpus.</p>
+<p>The graphs below shows how this new level of complexity is introduced in the draws with various aymetrical α vectors.</p>
+<pre class="r"><code>plot_dirichlet &lt;- function(alpha){
+set.seed(1234)
+documents &lt;- 3
+topics &lt;- 6
+x &lt;- t(rdirichlet(documents, rep(alpha, topics)))
+
+dt &lt;- data.frame(document=sort(rep(1:3, 6 * length(alpha))),
+                 topic=rep(1:6,3* length(alpha)),
+                 topic_prop=as.vector(x))
+
+dt %&gt;%
+  group_by(document, topic) %&gt;%
+  summarise(topic_prop = sum(topic_prop), .groups = &quot;drop&quot;) %&gt;%
+  ggplot(aes(x = topic,y = topic_prop, ymin = 0,ymax = topic_prop)) +
+  geom_point(color = &quot;blue&quot;) +
+  geom_linerange(color = &quot;blue&quot;) +
+  facet_wrap(~document) +
+  scale_y_continuous(lim = c(0,1)) +
+  theme(panel.border = element_rect(fill = 0, color = &quot;black&quot;)) +
+  ylab(&quot;Topic Proportion&quot;) +
+  scale_x_continuous(&quot;Topic Id&quot;, breaks = c(1:6))
+}
+
+#smallish alpha
+plot_dirichlet(c(0.1, 0.08, 0.11, 0.22))
+# alpha close to 1
+plot_dirichlet(c(1 , 0.8, 1.3))
+# large alpha
+plot_dirichlet(c(0.01, 0.25, 0.85))</code></pre>
+</div>
+<div id="recommended-values-for-dirichlet-parameters-in-lda" class="section level4">
+<h4>Recommended values for Dirichlet Parameters in LDA</h4>
+<p>When fitting LDA models, some methods requires the dirichlet parameters to be set apriori. Griffiths and Steyvers (2004) recommends:</p>
+<ul>
+<li><p>for the Dirichlet distribution of the topic proportion per document, the alpha parameter α should be set to 50 / K where K is the number of topic to be found in the corpus.</p></li>
+<li><p>For the distribution of the word proportion per topic, the parameter of the Dirichlet, eta should be set to 0.1.</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="conclusion-and-next-chapter" class="section level2">
+<h2>Conclusion and Next Chapter</h2>
+<p>We have now introduced what the LDA algorithms uncover and how the Dirichlet distribution in an important concept for the parametrisation of the TM.</p>
+<p>In the next chapter we will gently look into the Bayesian statistics of topic modeling.</p>
+</div>
+<div id="learning-ressources" class="section level2">
+<h2>Learning Ressources</h2>
+<ul>
+<li><p>Dirichlet function in R: <a href="https://www.rdocumentation.org/packages/DirichletReg/versions/0.6-3/topics/Dirichlet" class="uri">https://www.rdocumentation.org/packages/DirichletReg/versions/0.6-3/topics/Dirichlet</a></p></li>
+<li><p>Dirichlet wikipedia page: <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution" class="uri">https://en.wikipedia.org/wiki/Dirichlet_distribution</a></p></li>
+<li><p>Professor Blei KDD Tutorial: <a href="http://www.ccs.neu.edu/home/jwvdm/teaching/cs6220/fall2016/assets/pdf/blei-kdd-tutorial.pdf" class="uri">http://www.ccs.neu.edu/home/jwvdm/teaching/cs6220/fall2016/assets/pdf/blei-kdd-tutorial.pdf</a></p></li>
+<li><p>Professor Blei lectures on Topic models at Machine Learning Summer School (MLSS), Cambridge 2009 part 1 &amp; 2 with slides: <a href="http://videolectures.net/mlss09uk_blei_tm/" class="uri">http://videolectures.net/mlss09uk_blei_tm/</a></p></li>
+<li><p>Introduction into Latent Dirichlet Allocation by Professor Bobby B. Lyle at SMU School of Engineering URL: <a href="https://pdfs.semanticscholar.org/presentation/7f54/8af3930a4f10a012a46bc7956ac6da8c38e3.pdf" class="uri">https://pdfs.semanticscholar.org/presentation/7f54/8af3930a4f10a012a46bc7956ac6da8c38e3.pdf</a></p></li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Blei DM, Ng AY, Jordan MI (2003b). “Latent Dirichlet Allocation.” Journal of Machine Learning Research, 3, 993–1022, page 1009. URL <a href="http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf" class="uri">http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf</a></p></li>
+<li><p>Griffiths TL, Steyvers M (2004). “Finding Scientific Topics.” Proceedings of the National Academy of Sciences of the United States of America, 101, 5228–5235. URL <a href="http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf" class="uri">http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf</a></p></li>
+<li><p>Grün, B. &amp; Hornik, K. (2011). topicmodels: An R Package for Fitting Topic Models.. Journal of Statistical Software, 40(13), 1-30.</p></li>
+<li><p>Ponweiser M., “Latent Dirichlet Allocation in R”, Diploma Thesis, Institute for Statistics and Mathematics, 2012. URL <a href="http://epub.wu.ac.at/3558/1/main.pdf" class="uri">http://epub.wu.ac.at/3558/1/main.pdf</a></p></li>
+</ul>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

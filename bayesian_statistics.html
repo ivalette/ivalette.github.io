@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>bayesian_statistics.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Isabelle Valette</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="what_is_topic_modeling.html">Topic Models</a>
+</li>
+<li>
+  <a href="rstudioconf20.html">rstudio::conf</a>
+</li>
+<li>
+  <a href="thesaurus.html">Thesaurus in R</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="http://github.com/ivalette">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/valette_isa">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/isabellevalette/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><br clear="all" /></p>
+<p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
+<p><br clear="all" /> <br clear="all" /></p>
+<div id="a-gentle-look-into-the-bayesian-statistics" class="section level1">
+<h1>A gentle look into the Bayesian statistics</h1>
+<div id="topic-models-blog-serie" class="section level2">
+<h2>Topic Models Blog Serie</h2>
+<p>This is the third blog of a six part serie on “Learning, training and scaling topic models: a practical approach in R”. The serie covers:</p>
+<ol style="list-style-type: decimal">
+<li><p>What are <a href="what_is_topic_modeling.html">topic models</a> (TM)?</p></li>
+<li><p>A little <a href="what_is_LDA.html">introduction to LDA</a></p></li>
+<li><p>A gentle look into the Bayesian statistics behind TM</p></li>
+<li><p>How to <a href="how_to_train_TM_in_r.html">train TM and visualise outputs</a> in R?</p></li>
+<li><p>Setting up <a href="how_to_run_R_on_aws.html">AWS with R for scaling</a> TM</p></li>
+<li><p>How does the TM algorithm work under the hood? (To come)</p></li>
+</ol>
+<p>We will use 3 of Jane Austen’s books to illustrate our examples: Sense and Sensibility, Pride and Prejudice and Persuasion. We will download and process the Austen corpus with the help of the gutenbergr package.</p>
+</div>
+<div id="intuition-behind-bayesian-statistics" class="section level2">
+<h2>Intuition behind Bayesian statistics</h2>
+<p>The intuition behind Bayes’s theorem can be understood with the following image: think of your brain as a guessing machine. In a complex, noisy and ambiguious world, how does the brain actually makes decisions? Well, it uses both known information and best guesses on missing information to decide on what to do next. This process is called “unconscious inferences”: by constantly forming hypothesis (our beliefs) about what the present is and by evaluating those hypothesis based on current evidence and prior knowledge, we can decide on the next best action to take. This can be express with the mathematical equation below:</p>
+<p><span class="math display">\[
+Posterior Probability Of An Event = \frac{Prior Knowledge * Likelihood}{Evidence   (Marginal Likelihood)}
+\]</span></p>
+<p>In statistical terms, the Bayes’s theorem can also be written like this:</p>
+<p><span class="math display">\[
+P(H | D) = \frac{P(H) * P(D|H)}{P(D)}
+\]</span> where P is the probability, H stands for Hypothesis and D for Data. P(H|D) is the posterior, P(D|H) is the likelihood, P(H) is the prior and P(D) is the evidence. Now, let’s look at an example of the usage of the Bayes theorem to figure out if it is going to rain today.</p>
+<p>The Posterior Probability is written as P(Hypothesis | Data) which is the probability of the hypothesis given the data. In our example, it is the probability that it is going to rain today (hypothesis) given the dark cloud we see outside the window (data). The Likelihood P(Data | Hypothesis) is the probability of the data given the hypothesis: How likely is it that the clouds look the way they do now when we actually know that it is going to rain. The Prior is P(Hypothesis) and represents our prior knowledge about the hypothesis before we collect any new data, e.g, how likely is it that it is going to rain today?</p>
+<p>As a side note, the numerator of the Bayesian equation is sometimes called the joined probability. The denominator P(Data) is the evidence also called the marginal likelihood or marginal probability. It is the probability of seen the observed clouds under any given days. At this stage, let’s say that the main purpose of the denominator is to get a posterior value ranging from 0 to 1.</p>
+</div>
+<div id="the-grafical-model-the-posterior-and-the-bayesian-problem-to-solve" class="section level2">
+<h2>The grafical model, the posterior and the bayesian problem to solve</h2>
+LDA is a <strong>generative probabilistic model</strong>. This means that given an observable variable D and the hidden variables A, B and C, <strong>the posterior</strong> of A,B,C and D is P(A, B, C | D). This probabilitic generative process can be best represented as a <strong>grafical model</strong> that expresses the conditional dependence structure between the random variables of the model.
+<center>
+<img src="images/grafical.PNG" alt="Grafical model" />
+</center>
+<p>In the grafical model above the nodes denote random variables; dark nodes are observed data and white nodes are hidden variables that we are trying to estimate; edges (arrows) denote dependence between the random variables. These random variables can be in rectangles. Those are “plate notation” which represent random variables that are repeated/replicated.</p>
+<p>Grafical models are tools to visualize the bayesian inference problem that we are trying to solve. For example the graphical model above can be written as such:</p>
+<p><span class="math display">\[
+P(A,B,C|D) = \frac {P(A) * P(B) * P(C|B) * P(D|A,C)}{P(D)}
+\]</span> where the probability of A, B and C given D (posterior) is equal to the multiplication of Prior A and B with the likelihood P(C|B) * P(D|A,C) and divided by the evidence P(D). The numerator is the <strong>joint distribution</strong> of all the hidden and observed random variables from the model.</p>
+</div>
+<div id="lda-grifical-model" class="section level2">
+<h2>LDA Grifical Model</h2>
+<p>So how does the grafical model for LDA looks like?</p>
+<center>
+<img src="images/graficalLDA.PNG" alt="Grafical LDA model" />
+</center>
+<p>In this grafical model, the observed variable are the words in the document. All other variables are hidden: the main hidden variables that we are going to estimate are the topic distribution over words and topic proportion per document:</p>
+<ul>
+<li><p>Each topic is a distribution over words and that distribution over words comes from a Dirichlet distribution beta (β) with parameter eta (η).</p></li>
+<li><p>Each document is a distribution over topics and that distribution comes from a Dirichlet distribution theta (θ) with parameter alpha (α).</p></li>
+</ul>
+<p>There are two variables not in a plate:</p>
+<ul>
+<li><p>α is the parameter of the Dirichlet prior on the per-document topic proportion distributions θd for D (the total number of documents in the corpus)</p></li>
+<li><p>η is the parameter of the Dirichlet prior on the per-topic (k) word proportion distribution βk for all K topics of the corpus. K needs to be set apriori as we have seen earlier.</p></li>
+</ul>
+<p>Zd,n is the topic assignment or allocation for each document d and each word n from the word vocabulary N and and Wd,n which is a word from document d from vocabulary N.</p>
+</div>
+<div id="the-joint-distribution" class="section level2">
+<h2>The Joint Distribution</h2>
+<p>The model above can be translated into the following Bayesian Inference problem where we are trying to estimate the posterior of the random variables of the hidden semantic structure θ, β and Z given the observed w. The posterior computation for LDA can be obtained with: <span class="math display">\[
+Posterior P(θ,z,β,w|η,α) = \frac{Join Distribution} {Evidence} 
+\]</span></p>
+<p>where the numerator is the join distribution of all the hidden and observed variables represented as follows:</p>
+<p><span class="math display">\[
+JoinDistribution = ΠP(β|η) * ΠP(θ|α) * ΠP(z|θ)P(w|z,β)
+\]</span> where:</p>
+<ul>
+<li><p>Prior ΠP(β|η) represents the word proportion per topic (Dirichlet)</p></li>
+<li><p>Prior ΠP(θ|α) represents the topic proportion per document (Dirichlet)</p></li>
+<li><p>Likelihood ΠP(Z|θ)P(w|Z,β) represents the topic assigment (Multinomial)</p></li>
+</ul>
+<p>The denominator is the marginal probability (evidence), which is the probability of seeing the observed corpus under any topic model. In theory, it can be computed by doing a sum of the joint distribution over every possible instantiation of the hidden topic structure. However, this sum is intractable to compute. Hence we have to find ways of approximating it.</p>
+<p>There are several ways of doing this approximation. A popular way is to use the Gibbs sampling method.</p>
+</div>
+<div id="conclusion-and-next-chapter" class="section level2">
+<h2>Conclusion and Next Chapter</h2>
+<p>We took a gentle dive into the bayesian statistics of the LDA model. If you want to learn more about the the bayesian statistical inference of the LDA model, you can read further mathematical explanation <a href="https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation">here</a>.</p>
+<p>In the next chapter, we will focus on how to train the LDA model and the data engineering steps for doing so. We will also show how to assess the number of topics we expect to find in the Austen corpus. Finally, we will see the code used to parametrise the LDA model.</p>
+</div>
+<div id="learning-ressources" class="section level2">
+<h2>Learning ressources</h2>
+<ul>
+<li><p>Dirichlet function in R: <a href="https://www.rdocumentation.org/packages/DirichletReg/versions/0.6-3/topics/Dirichlet" class="uri">https://www.rdocumentation.org/packages/DirichletReg/versions/0.6-3/topics/Dirichlet</a></p></li>
+<li><p>Dirichlet wikipedia page: <a href="https://en.wikipedia.org/wiki/Dirichlet_distribution" class="uri">https://en.wikipedia.org/wiki/Dirichlet_distribution</a></p></li>
+<li><p>Professor Blei KDD Tutorial: <a href="http://www.ccs.neu.edu/home/jwvdm/teaching/cs6220/fall2016/assets/pdf/blei-kdd-tutorial.pdf" class="uri">http://www.ccs.neu.edu/home/jwvdm/teaching/cs6220/fall2016/assets/pdf/blei-kdd-tutorial.pdf</a></p></li>
+<li><p>Professor Blei lectures on Topic models at Machine Learning Summer School (MLSS), Cambridge 2009 part 1 &amp; 2 with slides: <a href="http://videolectures.net/mlss09uk_blei_tm/" class="uri">http://videolectures.net/mlss09uk_blei_tm/</a></p></li>
+<li><p>Conjugate prior on Wikipedia: <a href="https://en.wikipedia.org/wiki/Conjugate_prior" class="uri">https://en.wikipedia.org/wiki/Conjugate_prior</a></p></li>
+<li><p>Introduction into Latent Dirichlet Allocation by Professor Bobby B. Lyle at SMU School of Engineering URL: <a href="https://pdfs.semanticscholar.org/presentation/7f54/8af3930a4f10a012a46bc7956ac6da8c38e3.pdf" class="uri">https://pdfs.semanticscholar.org/presentation/7f54/8af3930a4f10a012a46bc7956ac6da8c38e3.pdf</a></p></li>
+<li><p>Monte Carlo example in R: <a href="https://rpubs.com/Koba/Monte-Carlo-Basic-Example" class="uri">https://rpubs.com/Koba/Monte-Carlo-Basic-Example</a></p></li>
+<li><p>Introduction to Markov Chain Monte Carlo: <a href="https://nicercode.github.io/guides/mcmc/" class="uri">https://nicercode.github.io/guides/mcmc/</a></p></li>
+<li><p>Markov Chains: <a href="http://setosa.io/ev/markov-chains/" class="uri">http://setosa.io/ev/markov-chains/</a></p></li>
+</ul>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ul>
+<li><p>Blei DM, Ng AY, Jordan MI (2003b). “Latent Dirichlet Allocation.” Journal of Machine Learning Research, 3, 993–1022, page 1009. URL <a href="http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf" class="uri">http://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf</a></p></li>
+<li><p>Griffiths TL, Steyvers M (2004). “Finding Scientific Topics.” Proceedings of the National Academy of Sciences of the United States of America, 101, 5228–5235. URL <a href="http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf" class="uri">http://psiexp.ss.uci.edu/research/papers/sciencetopics.pdf</a></p></li>
+<li><p>Grün, B. &amp; Hornik, K. (2011). topicmodels: An R Package for Fitting Topic Models.. Journal of Statistical Software, 40(13), 1-30.</p></li>
+<li><p>Ponweiser M., “Latent Dirichlet Allocation in R”, Diploma Thesis, Institute for Statistics and Mathematics, 2012. URL <a href="http://epub.wu.ac.at/3558/1/main.pdf" class="uri">http://epub.wu.ac.at/3558/1/main.pdf</a></p></li>
+</ul>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>rstudioconf20.utf8</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Isabelle Valette</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="what_is_topic_modeling.html">Topic Models</a>
+</li>
+<li>
+  <a href="rstudioconf20.html">rstudio::conf</a>
+</li>
+<li>
+  <a href="thesaurus.html">Thesaurus in R</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="http://github.com/ivalette">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://twitter.com/valette_isa">
+    <span class="fa fa-twitter fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://www.linkedin.com/in/isabellevalette/">
+    <span class="fa fa-linkedin fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+
+</div>
+
+
+<p><br clear="all" /></p>
+<p><img src="images/tree2.png" style="width:100%; border:5px solid; margin-right: 20px" align="left"></p>
+<p><br clear="all" /> <br clear="all" /></p>
+<p>rstudio::conf 2020 - San Francisco</p>
+<p><br clear="all" /></p>
+<p><img src="images/sf.jpg" style="width:100%; border:10px solid; margin-right: 20px" align="left"></p>
+<p><br clear="all" /></p>
+<div id="why-it-is-worth-it-to-travel-5-000-miles-to-come-to-rstudioconf" class="section level1">
+<h1>Why it is worth it to travel 5 000 miles to come to rstudio::conf?</h1>
+<p>One word to summarize rstudio::conf 2020: <strong>Sharing</strong>.</p>
+<p>Rstudio::conf is a great sharing experience. Mind you, sharing consists of giving and receiving and I received a LOT!</p>
+<p>This is what you can expect coming to a <a href="https://rstudio.com">RStudio</a> Conference:</p>
+<ul>
+<li><p>You get amazing <strong>keynotes</strong>, <strong>presentations</strong> and <strong>R resources</strong> (even more so if you go to the workshops before the conference).</p></li>
+<li><p>You see R things that <strong>you have never seen before</strong>.</p></li>
+<li><p>You get <strong>inspired</strong> and make <strong>new friends</strong>.</p></li>
+<li><p>You get even prouder (if that is possible) to belong to this <strong>amazing community of talents</strong>.</p></li>
+</ul>
+<div id="resources-from-the-workshop" class="section level2">
+<h2>Resources from the workshop</h2>
+<p>I was lucky to join the rstudio::conf twice: Once in San Diego and now in San Francisco. I see that what I use the most, once the conference is over, is the notes and tips from the workshop. The workshops are very hands-on, with practical exercises and best practices. I have found that they directly impact productivity, support problem-solving skills and increase your coding proficiency. So, if you can join them, do! What is also great about the workshops is that, all the notes and slides from all the workshops are <strong>shared</strong> with all participants. If like me, there were several workshops you would have liked to attend, you can get all the <a href="https://github.com/rstudio-conf-2020">materials</a> from these workshops!</p>
+<p><img src="images/max.jpg" style="width:100%; border:10px solid; margin-right: 20px" align="left"></p>
+<p>It is the same with the keynotes and presentations. All is <strong>shared</strong> both with participants and later on, none participants.</p>
+<div id="san-diego" class="section level3">
+<h3>San Diego</h3>
+<p>In San Diego, I learn tidyeval and my favorite R tips to date: to edit with multiple cursors on multiple lines, using Alt, then dragging with the mouse. It creates a rectangular selection where you need the multiple cursors to be. I have used this tip weekly since San Diego. It speeds up how I code, edit code and do debugging.</p>
+</div>
+<div id="san-francisco" class="section level3">
+<h3>San Francisco</h3>
+<p>In San Francisco, I joined the Applied Machine Learning workshop with <a href="https://twitter.com/topepos">Max Kuhn</a> and <a href="https://twitter.com/dvaughan32">Davis Vaughan</a>. What I liked the most was the best practices on the modeling workflow. We also learned proper naming convention for recipes, models, tuning, etc. And of course, all of Max’s stories on modeling make the workshop a fun experience to be a part of. I will now translate my notes into a short(er) presentation and <strong>share</strong> with colleagues, <a href="https://rladies.org">RLadies</a> and <a href="https://jumpingrivers.github.io/meetingsR/r-user-groups.html">UseRs</a> back in Norway.</p>
+</div>
+<div id="book-signing" class="section level3">
+<h3>Book Signing</h3>
+<p><img src="images/signed.jpg" style="width:100%; border:10px solid; margin-right: 20px" align="left"></p>
+<p>When it comes to resources, I must mention the book signing. I have never seen anything like it. I will come home with 6 R books signed by the authors. Each author wrote a personal note to each and everyone of us, so lucky to be <strong>given</strong> the books. I will go home with:</p>
+<ul>
+<li><p>Deep Learning with R by Francois Chollet and JJ Allaire</p></li>
+<li><p>Feature Engineering and selection by Max Kuhn and Kjell Johnson</p></li>
+<li><p>Interactive web-based data visualization with R, plotly, and shiny by Carson Sievert</p></li>
+<li><p>Mastering spark with R by Javier Luraschi, Kevin Kuo and Edgar Ruiz</p></li>
+<li><p>R Graphics Cookbook by Winston Chang</p></li>
+<li><p>R Markdown by Yihui Xie, JJ Allaire and Garrett Grolemund</p></li>
+</ul>
+</div>
+</div>
+<div id="resources-from-the-conference" class="section level2">
+<h2>Resources from the conference</h2>
+<div id="keynotes" class="section level3">
+<h3>Keynotes</h3>
+<p>It seems to me that the red thread in rstudio::conf is on how to work better, faster and more efficiently with R. This is why I love <a href="https://twitter.com/JennyBryan">Jenny Brian</a>’s humorous keynote on <a href="https://github.com/jennybc/debugging#readme">debugging</a>. Learning to debug properly is an underrated skills among data scientists. I think we like to talk about modeling more than debugging frankly. And yet, considering how we spend our time…Well, let’s just say that Jenny’s presentation was spot-on.</p>
+</div>
+<div id="never-ever-seen-before" class="section level3">
+<h3>Never ever seen before…</h3>
+<p>There is nothing that I like more than many of my interests combined together in one glorious presentation. During the kick-off breakfast of <a href="https://rladies.org">RLadies</a> on Wednesday, I saw one such R presentation. It was unlike anything I had seen before: art, art history and R all in one.</p>
+<p><a href="https://twitter.com/MineDogucu">Mine Dogucu</a> from the department of Statistics at UC Irvine had a unique presentation called “Five art pieces that every R users should know”. She showed us the connection between R and René Magritte, the history of the first word cloud and some dishes from a certain dinner party that you will not forget. Curious? Get in touch with Mine.</p>
+</div>
+<div id="inspiration-and-new-friends" class="section level3">
+<h3>Inspiration and new friends</h3>
+<p>Coming from the media industry, I must say that one of my favorite presentations was “Building a new data science pipeline for the Financial Times (FT) with RStudio Connect”. <a href="https://www.linkedin.com/in/george-kastrinakis-abba83b9/">George Kastrinakis</a>, data scientist at the FT was presenting. I recognized all the challenges and tasks that George was talking about. It always surprises me to see how much in common we, R users, have. And if you are coming from the same industry even more so.</p>
+<p><img src="images/george.jpg" style="width:100%; border:10px solid; margin-right: 20px" align="left"> <br clear="all" /></p>
+<p>I quickly connected with George and we had breakfast together the next day. We shared our experiences, challenges and impactful projects together. I hope my team can visit the FT soon and George’s team can visit us in Norway. Let’s see what happen. In any case, at rstudio::conf, you make many new R friends! George, you also motivated me to become a speaker at the next rstudio::conf. Thanks for the inspiration and thanks for <strong>sharing</strong>!</p>
+</div>
+</div>
+<div id="an-amazing-community-of-talents" class="section level2">
+<h2>An amazing community of talents</h2>
+<p><img src="images/hil_and_rog.jpg" style="width:100%; border:10px solid; margin-right: 20px" align="left"> <br clear="all" /></p>
+<p>While I received a lot at the conference, my highlights were in giving. I gave a big big hug to <a href="https://twitter.com/rdpeng">Roger Peng</a> after he and <a href="https://twitter.com/hspter">Hilary Parker</a> did the 100th <a href="http://nssdeviations.com">podcast</a> of <strong>Not so standard deviation</strong>. It was important to me to say thank you to Roger. His Data Science Specialization on Coursera (together with Brian Caffo and Jeff Leek) launched my career as a Data Scientist back in 2013.</p>
+<p>I also gave a big hug to <a href="https://twitter.com/hadleywickham">Hadley</a> and thanked him for all the he is doing/has been doing for the R community. I gave (many) hugs to the incomparable <a href="https://twitter.com/juliasilge">Julia Silge</a> who has done a lot in 2019 to make our community safe, inclusive and respectful for all R users (Could not find you, <a href="https://twitter.com/dataandme">Mara Averick</a> - Wanted to say a big thank you to you too!!). I gave hugs to Anne Carome almost every day. Anne is the great organizer behind rstudio::conf.</p>
+<p>Finally, I feel so proud and honored to be part of the global movement that is <a href="https://rladies.org">RLadies</a>. You, ladies have giving many a voice (including myself)! You are rocking my world! 😍😍</p>
+<p>This whole conference has been a big highlight for me. Thanks to everybody involved!</p>
+<p><img src="images/rladies.png" style="width:100%; border:10px solid; margin-right: 20px" align="left"> <br clear="all" /></p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
