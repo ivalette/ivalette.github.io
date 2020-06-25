@@ -321,7 +321,7 @@ $(document).ready(function () {
 <p><br clear="all" /> <br clear="all" /></p>
 <div id="how-to-create-thesaurus-using-udpipe-and-the-wordnet-packages-with-r" class="section level1">
 <h1>How to create thesaurus using udpipe and the wordnet packages with R?</h1>
-<p>But first, let’s download the Jane Austen novel, Pride and Prejudice from the gutenbergr package.</p>
+<p>But first, let’s download the Jane Austen novel, Pride and Prejudice from the gutenbergr package. We will use it as our raw text input.</p>
 <pre class="r"><code>pp &lt;- gutenberg_download(1342) %&gt;% .$text %&gt;% paste0(., collapse = &quot; &quot;)</code></pre>
 <div id="data-engineering-for-text-annotation" class="section level2">
 <h2>Data Engineering for Text annotation</h2>
@@ -332,15 +332,15 @@ $(document).ready(function () {
 <li><p>which also allow you to train your own parsing &amp; tagging models.</p></li>
 </ul>
 <p>…Except R package udpipe which satisfies these 3 criteria.</p>
-<p>Udpipe enables tokenisation, speech tagging, lemmatization and dependency parsing. Dependency Parsing is the process of finding relationships between words- e.g “head” words and words which modify those heads. This allows you to look for words which may be far away from each other in the raw text but influence each other. Dependency parsing will not be used to build our LDA model as opposed to tokenisation, speech tagging and lemmatization.</p>
+<p>Udpipe enables tokenisation, speech tagging, lemmatization and dependency parsing. Dependency Parsing is the process of finding relationships between words- e.g “head” words and words which modify those heads. This allows you to look for words which may be far away from each other in the raw text but influence each other. Dependency parsing will not be used to thesaurus as opposed to tokenisation, speech tagging and lemmatization.</p>
 <p>So, what are these concepts?</p>
 <ul>
 <li><p>Tokenization is the first step in cleaning data: it removes punctuation, spacing, handling of special characters and extract words from sentences. udpipe is also handy in the sense that it keeps track for you of document ids, paragraph and sentence id, token id, and so on, supposing that you have correct spacing/punctuation between, paragraph, sentences, etc.</p></li>
 <li><p>Lemmatization is an advanced form of stemming. The way it works is that it groups together the inflected forms of a word (walks, walked, walking) into its lemma (walk) so they can be analysed as a single item. An advantage of using udpipe is that it does for you the mapping between token and lemma.</p></li>
-<li><p>According to <a href="https://en.wikipedia.org/wiki/Part-of-speech_tagging">wikipedia</a>, part-of-speech tagging, also called POS tagging is the process of marking up a corpus as corresponding to a particular part of the speech based on both its definition and its context—i.e., its relationship with adjacent and related words in a phrase, sentence, or paragraph. A simplified form of this is commonly taught to school-age children, in the identification of words as nouns, verbs, adjectives, adverbs, etc. To train our LDA model, we used only Nouns, Verbs, Adjectives, Adverbs and Prop Nouns.</p></li>
+<li><p>According to <a href="https://en.wikipedia.org/wiki/Part-of-speech_tagging">wikipedia</a>, part-of-speech tagging, also called POS tagging is the process of marking up a corpus as corresponding to a particular part of the speech based on both its definition and its context—i.e., its relationship with adjacent and related words in a phrase, sentence, or paragraph. A simplified form of this is commonly taught to school-age children, in the identification of words as nouns, verbs, adjectives, adverbs, etc. To retreive thesaurus, we used only Nouns, Verbs, Adjectives, Adverbs and Prop Nouns.</p></li>
 </ul>
-<p>Below is the code for text annotation in R with udpipe. This part of the code can be quite computationally expensive if you have a massive corpus of several hundred thousands documents. Hence the need to hook R up to AWS that we will see in the next chapter.</p>
-<p>More information about the quality of the udpipe model for text annotation for your language can be found <a href="https://github.com/jwijffels/udpipe.models.ud.2.0/blob/master/inst/udpipe-ud-2.0-170801/README">here</a>. As seen in the document, the models produce correct lemma and upos in more than 96% of the sentences. This is good enough for our purpose. I have tested both the Norwegian and English models.</p>
+<p>Below is the code for text annotation in R with udpipe. This part of the code can be quite computationally expensive if you have a massive corpus of several hundred thousands documents. Hence the potential need to hook R up to AWSor other scaling tools.</p>
+<p>More information about the quality of the udpipe model for text annotation for your language can be found <a href="https://github.com/jwijffels/udpipe.models.ud.2.0/blob/master/inst/udpipe-ud-2.0-170801/README">here</a>. As seen in the document, the models produce correct lemma and upos in more than 96% of the sentences. This is good enough for our purpose. I have tested both the Norwegian and English models successfully and I am currently testing the French model.</p>
 <pre class="r"><code># Downloading and loading the udpipe English model for lemmatization
 model &lt;- udpipe_download_model(language = &quot;english&quot;)
 model &lt;- udpipe_load_model(model$file_model)
@@ -362,7 +362,7 @@ annotated &lt;- as.data.frame(annotated)</code></pre>
 </div>
 <div id="the-document-term-matrix" class="section level2">
 <h2>The Document Term Matrix</h2>
-<p>First, a little word on the document-term matrix - what is it? It is the input data to train the LDA model or find thesaurus. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei &amp; Lafferty 2009 (<a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf-idf</a>)</p>
+<p>First, a little word on the document-term matrix - what is it? It is the input data to train the LDA model or retreive thesaurus from a lemma. The rows in the document-term matrix correspond to all documents in the corpus and the columns are the lemmas from the corpus vocabulary. The values w(i,j) of the matrix indicate how often the word j appears in document i. It is usual to reduce the document-term matrix to the lemmas that appear in a minimum of X documents. Griffiths and Steyvers (2004) recommend to set this X value to 5. Another way to reduce the document-term matrix is to include only the lemma with the highest term-frequency inverse document frequency scores as recommended by Blei &amp; Lafferty 2009 (<a href="https://en.wikipedia.org/wiki/Tf%E2%80%93idf">tf-idf</a>)</p>
 <p>During the final stages of the data preprosessing to create the document term matrix, we do the following:</p>
 <ul>
 <li><p>remove stop words</p></li>
@@ -401,6 +401,7 @@ lemma_freq %&gt;%
 <pre class="r"><code>synonyms(&quot;time&quot;, &quot;NOUN&quot;)</code></pre>
 <pre><code>## [1] &quot;clip&quot;             &quot;clock time&quot;       &quot;fourth dimension&quot; &quot;meter&quot;           
 ## [5] &quot;metre&quot;            &quot;prison term&quot;      &quot;sentence&quot;         &quot;time&quot;</code></pre>
+<p>The way the wrodnet package works is that it point to an English dictionary that retrieve the thesaurus. This dictionary can potentially be used for any languages.</p>
 </div>
 <div id="learning-ressources" class="section level2">
 <h2>Learning Ressources</h2>
